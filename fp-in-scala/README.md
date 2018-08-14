@@ -1,0 +1,2 @@
+# Functional programming in Scala
+[Jupyter-scala](https://github.com/jupyter-scala/jupyter-scala) notebooks based on [Functional programming in Scala](https://www.manning.com/books/functional-programming-in-scala) by P. Chiusano and R. Bjarnason (Manning, 2014). 
