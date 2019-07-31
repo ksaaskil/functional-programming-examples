@@ -1,0 +1,19 @@
+{
+  "name": "fp-ts",
+  "version": "1.0.0",
+  "description": "Examples of using fp-ts",
+  "main": "index.js",
+  "author": "Kimmo Sääskilahti",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "dependencies": {
+    "@types/jest": "^24.0.16",
+    "fp-ts": "^2.0.3",
+    "jest": "^24.8.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
+  }
+}
