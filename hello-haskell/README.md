@@ -24,7 +24,7 @@ stack ghci
 
 Load a module in `ghci`:
 
-````ghci
+```
 Prelude> :l StartingOut
 ```
 
@@ -39,4 +39,3 @@ stack exec hello-haskell-exe
 ```bash
 stack test
 ```
-````
