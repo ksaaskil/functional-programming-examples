@@ -1,6 +1,10 @@
 # Hello Haskell
 
-Example project created with
+Code examples from the awesome [Learn You a Haskell](http://learnyouahaskell.com) book. See the `src` code for chapter notes.
+
+## Project setup
+
+Project was created using [stack](https://docs.haskellstack.org/en/stable/README/):
 
 ```bash
 stack new hello-haskell new-template
