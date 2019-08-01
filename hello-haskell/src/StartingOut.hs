@@ -4,7 +4,7 @@ module StartingOut
     ()
 where
 
--- Function with no arguments
+-- Function with no arguments is called a definition or name
 -- Apply with: printHello (no parentheses!)
 printHello = putStrLn "Hello from Haskell!"
 
@@ -22,3 +22,28 @@ doubleSmallNumber x = if x > 100 then x else x * 2
 
 -- Use the expression as part of a larger expression
 doubleSmallNumber' x = (if x > 100 then x else x * 2) + 1
+
+-- In Haskell, lists are homogenous: they can only store elements of the same type.
+lostNumbers = [4, 8, 15, 16, 23, 42]
+
+-- Concatenation with ++
+concatenatedLists = lostNumbers ++ [9, 10, 11, 12]
+
+-- Strings are just lists of chars
+concatenatedString = "hello" ++ " " ++ "world"
+
+-- Cons operator is very fast compared to concatenation
+aSmallCat = 'A' : " SMALL CAT"
+
+-- These are equal
+areEqualLists = 1 : 2 : 3 : [] == [1, 2, 3]  -- true
+
+-- Accessing elements by index
+secondLetter = "Steve Buscemi" !! 1
+
+-- Lists have the usual basic functions
+headOfAList = head lostNumbers
+lengthOfAList = length lostNumbers
+listIsNull = null lostNumbers
+firstThreeNumbers = take 3 lostNumbers
+has42 = 42 `elem` lostNumbers
