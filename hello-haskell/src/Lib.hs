@@ -1,6 +1,8 @@
 module Lib
     ( someFunc
-    ) where
+    )
+where
 
 someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+someFunc = putStrLn "Hello from Haskell!"
+a = 5 + 4
