@@ -47,3 +47,30 @@ lengthOfAList = length lostNumbers
 listIsNull = null lostNumbers
 firstThreeNumbers = take 3 lostNumbers
 has42 = 42 `elem` lostNumbers
+
+-- Ranges are a way of making lists that are arithmetic sequences of elements that can be enumerated.
+listOfNumbers = [1 .. 20]
+listOfChars = ['a' .. 'z']
+listOfNumbersWithStep = [2, 4 .. 20]
+listGoingBackwards = [20, 19 .. 1]
+listTakenFromInfiniteList = take 24 [13, 26 ..]
+listTakenFromCycle = take 7 (cycle [1, 2, 3])
+listWithReplicate = replicate 10 5  -- Equivalent to take 10 (repeat 5)
+
+-- List comprehensions
+listComprehension = [ 2 * x | x <- [1 .. 10] ]
+
+-- Filtering a list comprehension using a predicate
+listComprehensionWithFilter = [ 2 * x | x <- [1 .. 10], x > 5 ]
+
+-- Custom function applying to a list
+boomBangs xs = [ if x < 10 then "BOOM" else "BANG!" | x <- xs, odd x ]
+
+-- Compute all products from two lists
+listComprehensionWithTwoLists = [ x * y | x <- [1, 2, 3], y <- [4, 5, 6] ]
+
+-- Simple implementation of length using a list comprehension
+length' xs = sum [ 1 | _ <- xs ]
+
+-- Strings are lists of chars so just process them with list comprehensions
+removeNonUppercase st = [ c | c <- st, c `elem` ['A' .. 'Z'] ]
