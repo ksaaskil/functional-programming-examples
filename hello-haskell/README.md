@@ -28,6 +28,12 @@ Load a module in `ghci`:
 Prelude> :l StartingOut
 ```
 
+Reload module:
+
+```
+StartingOut> :r
+```
+
 ### Execute
 
 ```bash
