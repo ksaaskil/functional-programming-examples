@@ -1,5 +1,6 @@
--- http://learnyouahaskell.com/starting-out
--- Load with `:l StartingOut` from `stack ghci`
+-- Chapter 2: http://learnyouahaskell.com/starting-out
+-- Enter interactive mode with `stack ghci`
+-- and load the module with `:l StartingOut`
 module StartingOut
     ()
 where
