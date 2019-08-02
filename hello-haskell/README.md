@@ -1,6 +1,8 @@
 # Hello Haskell
 
-Code examples from the awesome [Learn You a Haskell](http://learnyouahaskell.com) book. See the `src` code for chapter notes.
+Code examples from the awesome [Learn You a Haskell](http://learnyouahaskell.com) book.
+
+- [Chapter 2: Starting out](src/StartingOut.hs)
 
 ## Project setup
 
