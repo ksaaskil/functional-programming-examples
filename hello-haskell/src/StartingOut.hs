@@ -74,3 +74,17 @@ length' xs = sum [ 1 | _ <- xs ]
 
 -- Strings are lists of chars so just process them with list comprehensions
 removeNonUppercase st = [ c | c <- st, c `elem` ['A' .. 'Z'] ]
+
+-- Lists can also be zipped
+zippedList = [1, 2, 3, 4, 5] `zip` [1, 2, 3, 4, 5]
+
+-- Because Haskell is lazy and the longer list simply gets cut off,
+-- you can zip an infinite list with a finite list
+zippedListWithTwoElements = zip [1 ..] ["apple", "orange"]
+
+-- There are also tuples, which are a bit like lists with definite length
+-- and allowed to contain several types
+tuple = ('a', 1)
+
+firstItemOfTuple = fst tuple
+secondItemOfTuple = snd tuple
