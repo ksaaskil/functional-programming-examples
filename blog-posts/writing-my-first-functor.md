@@ -9,10 +9,7 @@ The best size is 1000 x 420.
 # series: post series name.
 ---
 
-# Writing my first functor
-
-When learning functional programming, sooner or later you encounter mathematical concepts like functor. Functor is a key element in function composition, the key to functional programming.
-
+When learning functional programming, sooner or later one encounters new mathematical concepts like functor.
 Googling for "what is a functor" you find explanations ranging [from](https://medium.com/@dtinth/what-is-a-functor-dcf510b098b6) "something you can map over" [to](https://en.wikipedia.org/wiki/Functor) "a map between categories".
 
 Here, I attempt to summarize my learnings and bridge the gap between these definitions. I provide the definitions required for applying functors in daily programming. The code examples will be in Scala and TypeScript with some Haskell thrown in, but the actual language should not matter that much.
