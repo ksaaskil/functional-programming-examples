@@ -7,12 +7,16 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "ts-node index.ts"
+    "start": "ts-node index.ts",
+    "test": "jest"
   },
   "dependencies": {
-    "@types/jest": "^24.0.16",
+    "@types/jest": "^24.0.17",
+    "axios": "^0.19.0",
+    "chalk": "^2.4.2",
     "fp-ts": "^2.0.3",
     "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
     "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   }
