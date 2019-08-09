@@ -67,13 +67,23 @@ const parseResponseBodyAsTaskEither = (
     `Failed parsing joke from response: ${JSON.stringify(responseBody)}`
   );
 
+const chainWithEither: <A, B>(
+  f: (fa: A) => Either<Error, B>
+) => (te: TaskEither<Error, A>) => TaskEither<Error, B> = <A, B>(
+  f: (fa: A) => Either<Error, B>
+) => {
+  return (te: TaskEither<Error, A>) => chain((a: A) => fromEither(f(a)))(te);
+};
+
 // Problem: chaining a `TaskEither<Error, string>` with `string => Either<Error, string>`
 // (without casting everything with `asTaskEither`) is possible how?
 const fpChuckClient = (url: string): TaskEither<Error, string> =>
   pipe(
     url,
     fetchJokeTask,
-    chain(parseResponseBodyAsTaskEither)
+    chainWithEither(responseBody =>
+      asEither(() => parseResponseBody(responseBody))
+    )
   );
 
 /**
