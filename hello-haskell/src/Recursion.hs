@@ -48,3 +48,13 @@ zip' (x:xs) (y:ys) = (x, y) : zip' xs ys
 elem' :: (Eq a) => a -> [a] -> Bool
 elem' _ [] = False
 elem' a (x:xs) = a == x || a `elem'` xs
+
+-- QuickSort is the poster child of Haskell, it's so elegant!
+-- In quicksort, a sorted list is a list that has all the values smaller than (or equal to) the head of the list in front (and those values are sorted), then comes the head of the list in the middle and then come all the values that are bigger than the head (they're also sorted). 
+-- Notice that the definition uses the verb "is" to define the algorithm instead of saying "do this, do that, then do that..." That's functional programming!
+quicksort:: (Ord a) => [a] -> [a]
+quicksort [] = []
+quicksort (x:xs) = 
+    let smallerSorted = quicksort [a | a <- xs, a <= x]
+        biggerSorted = quicksort [a | a <- xs, a > x]
+    in smallerSorted ++ [x] ++ biggerSorted
