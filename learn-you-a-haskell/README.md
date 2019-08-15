@@ -3,6 +3,11 @@
 Code examples from the awesome [Learn You a Haskell](http://learnyouahaskell.com) book.
 
 - [Chapter 2: Starting out](src/StartingOut.hs)
+- [Chapter 3: Types and Typeclasses](./src/TypesAndTypeClasses.hs)
+- [Chapter 4: Syntax in Functions](./src/SyntaxInFunctions.hs)
+- [Chapter 5: Recursion](./src/Recursion.hs)
+- [Chapter 6: Higher order functions](./src/HigherOrderFunctions.hs)
+- [Chapter 7: Modules](./src/Modules.hs)
 
 ## Project setup
 
