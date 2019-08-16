@@ -8,6 +8,7 @@ Code examples from the awesome [Learn You a Haskell](http://learnyouahaskell.com
 - [Chapter 5: Recursion](./src/Recursion.hs)
 - [Chapter 6: Higher order functions](./src/HigherOrderFunctions.hs)
 - [Chapter 7: Modules](./src/Modules.hs)
+- [Chapter 8: Making our own types and typeclasses](./src/MakingOurOwnTypesAndTypeclasses.hs)
 
 ## Project setup
 
