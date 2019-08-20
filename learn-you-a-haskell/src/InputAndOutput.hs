@@ -7,6 +7,7 @@ where
 
 import           Control.Monad
 import           Data.Char
+import           System.IO
 
 -- Pure functions cannot change state of things in the world. To achieve effects,
 -- Haskell uses the IO type.
@@ -89,3 +90,97 @@ useForM = do
     mapM putStrLn colors
 -- You can think of forM as meaning: make an I/O action for every element in this list.
 
+-- Files and streams
+
+-- getContents is an I/O actions that reads everything from the standard input until it encounters EOF. But it does it lazily! It does not read the contents with `foo <- getContents` but when it's actually accessed.
+
+contentReader = do
+    contents <- getContents
+    putStr (map toUpper contents)
+
+shortLineAcceptor = do
+    contents <- getContents
+    putStr $ shortLinesOnly contents
+
+shortLinesOnly :: String -> String
+shortLinesOnly input =
+    let allLines   = lines input
+        shortLines = filter (\line -> length line < 10) allLines
+        result     = unlines shortLines
+    in  result
+
+-- `interact` is made for the pattern of getting some string from the input, transforming it and then outputting it. It takes a function `String -> String` and returns an I/O action that takes inputs, runs the function on it, and prints the result. Observe:
+
+shortLinesAcceptorWithInteract = interact shortLinesOnly
+
+-- Another example:
+respondPalidromes =
+    unlines
+        . map
+              (\xs ->
+                  if isPalindrome xs then "palindrome" else "not a palindrome"
+              )
+        . lines
+    where isPalindrome xs = xs == reverse xs
+
+respondPalidromesMain = interact respondPalidromes
+
+-- So far we've been reading from standard input and writing to standard output. Writing files is very similar. Here's a program that reads a file:
+
+fileReader = do
+    handle   <- openFile "girlfriend.txt" ReadMode
+    contents <- hGetContents handle
+    putStr contents
+    hClose handle
+
+-- Note the difference between the handle used to identify a file and the contents of the file, bound in our program to handle and contents. The handle is just something by which we know what our file is. If you imagine your whole file system to be a really big book and each file is a chapter in the book, the handle is a bookmark that shows where you're currently reading (or writing) a chapter, whereas the contents are the actual chapter.
+
+-- Here's the same with `withFile`:
+withFileExample = withFile
+    "girlfriend.txt"
+    ReadMode
+    (\handle -> do
+        contents <- hGetContents handle
+        putStr contents
+    )
+
+-- withFile essentially does this:
+withFile' :: FilePath -> IOMode -> (Handle -> IO a) -> IO a
+withFile' path mode f = do
+    handle <- openFile path mode
+    result <- f handle
+    hClose handle
+    return result
+
+-- Just like we have hGetContents that works like getContents but for a specific file, there's also hGetLine, hPutStr, hPutStrLn, hGetChar, etc. They work just like their counterparts without the h, only they take a handle as a parameter and operate on that specific file instead of operating on standard input or standard output. 
+
+-- readFile has a type signature of readFile :: FilePath -> IO String. Remember, FilePath is just a fancy name for String. readFile takes a path to a file and returns an I/O action that will read that file (lazily, of course) and bind its contents to something as a string.
+
+readFileExample = do
+    contents <- readFile "girlfriend.txt"
+    putStr contents
+
+-- writeFile has a type of writeFile :: FilePath -> String -> IO (). It takes a path to a file and a string to write to that file and returns an I/O action that will do the writing.
+
+writeFileExample = do
+    contents <- readFile "girlfriend.txt"
+    let transformedText = map toUpper contents
+    writeFile "girlfriendcaps.txt" transformedText
+
+-- appendFile has a type signature that's just like writeFile, only appendFile doesn't truncate the file to zero length if it already exists but it appends stuff to it.
+
+appendExample = do
+    todoItem <- getLine
+    appendFile "todo.txt" (todoItem ++ "\n")
+
+-- Just like you can think of lists as streams, you can also think of files as streams. This will read one line at a time and print it out to the terminal as it goes along. So you may be asking, how wide is this pipe then? How often will the disk be accessed? Well, for text files, the default buffering is line-buffering usually. That means that the smallest part of the file to be read at once is one line. That's why in this case it actually reads a line, prints it to the output, reads the next line, prints it, etc. For binary files, the default buffering is usually block-buffering. That means that it will read the file chunk by chunk. The chunk size is some size that your operating system thinks is cool.
+
+-- You can control how exactly buffering is done by using the hSetBuffering function.
+manualBufferingExample = withFile
+    "something.txt"
+    ReadMode
+    (\handle -> do
+        hSetBuffering handle $ BlockBuffering (Just 2048)
+        contents <- hGetContents handle
+        putStr contents
+    )
