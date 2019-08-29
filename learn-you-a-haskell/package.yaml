@@ -1,10 +1,8 @@
-name: hello-haskell
+name: learn-you-a-haskell
 version: 0.1.0.0
-github: "githubuser/hello-haskell"
+github: "ksaaskil/functional-programming-examples"
 license: BSD3
-author: "Author name here"
-maintainer: "example@example.com"
-copyright: "2019 Author name here"
+author: "ksaaskil"
 
 extra-source-files:
   - README.md
@@ -30,7 +28,7 @@ library:
   source-dirs: src
 
 executables:
-  hello-haskell-exe:
+  main-exe:
     main: Main.hs
     source-dirs: app
     ghc-options:
@@ -38,8 +36,8 @@ executables:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - hello-haskell
-      - directory
+      - learn-you-a-haskell
+
   todo:
     main: Main.hs
     source-dirs: todo-app
@@ -48,7 +46,7 @@ executables:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - hello-haskell
+      - learn-you-a-haskell
       - directory
 
 tests:
