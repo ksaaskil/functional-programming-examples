@@ -29,7 +29,7 @@ resolver: lts-13.30
 #   - auto-update
 #   - wai
 packages:
-- .
+  - .
 # Dependency packages to be pulled from upstream that are not in the resolver.
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
@@ -40,8 +40,7 @@ packages:
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
 extra-deps:
-- acme-missiles-0.3 # not in the LTS
-
+  - acme-missiles-0.3 # not in the LTS
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

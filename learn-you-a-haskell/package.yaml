@@ -1,14 +1,14 @@
-name:                hello-haskell
-version:             0.1.0.0
-github:              "githubuser/hello-haskell"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2019 Author name here"
+name: hello-haskell
+version: 0.1.0.0
+github: "githubuser/hello-haskell"
+license: BSD3
+author: "Author name here"
+maintainer: "example@example.com"
+copyright: "2019 Author name here"
 
 extra-source-files:
-- README.md
-- ChangeLog.md
+  - README.md
+  - ChangeLog.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -17,36 +17,47 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/githubuser/hello-haskell#readme>
+description: Please see the README on GitHub at <https://github.com/githubuser/hello-haskell#readme>
 
 dependencies:
-- base >= 4.7 && < 5
-- text
-- filepath
-- containers
-- acme-missiles # added
+  - base >= 4.7 && < 5
+  - text
+  - filepath
+  - containers
+  - acme-missiles # added
 
 library:
   source-dirs: src
 
 executables:
   hello-haskell-exe:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - hello-haskell
+      - hello-haskell
+      - directory
+  todo:
+    main: Main.hs
+    source-dirs: todo-app
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - hello-haskell
+      - directory
 
 tests:
   hello-haskell-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - hello-haskell
+      - hello-haskell
