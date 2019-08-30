@@ -1,6 +1,6 @@
 module Main where
 
-import           Problem1
+import           Problem1                       ( result )
 
 main :: IO ()
-main = someFunc
+main = putStrLn $ show result

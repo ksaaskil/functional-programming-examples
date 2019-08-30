@@ -1,7 +1,7 @@
 module Problem1
-    ( someFunc
+    ( result
     )
 where
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+result :: Int
+result = 1
