@@ -1,13 +1,10 @@
 import           Test.HUnit
 import           Problem1                       ( result )
 
-foo :: Int -> Int
-foo = (+ 1)
+testProblem1 :: Test
+testProblem1 = TestCase $ assertEqual "Should return 2" 2 result
 
-testFoo :: Test
-testFoo = TestCase $ assertEqual "Should return 1" 1 result
-
-tests = TestList [TestLabel "Problem 1" testFoo]
+tests = TestList [TestLabel "Problem 1" testProblem1]
 
 main :: IO Counts
 main = runTestTT tests

@@ -4,4 +4,5 @@ module Problem1
 where
 
 result :: Int
-result = 1
+result = let a = 1 in a + 1
+
