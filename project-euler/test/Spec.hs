@@ -4,9 +4,10 @@ import           Problem1                       ( result
                                                 )
 
 testProblem1ResultForBelow = TestCase
-    $ assertEqual "Should return 15 for under 20" 15 (resultForBelow 20)
+    $ assertEqual "Should return 23 for under 10" 23 (resultForBelow 10)
 
-testProblem1Result = TestCase $ assertEqual "Should return 33165" 33165 result
+testProblem1Result =
+    TestCase $ assertEqual "Should return 233168" 233168 result
 
 tests = TestList
     [ TestLabel "Problem 1"        testProblem1Result
