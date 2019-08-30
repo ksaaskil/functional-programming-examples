@@ -1,3 +1,4 @@
+-- https://projecteuler.net/problem=1
 module Problem1 where
 
 resultForBelow :: (Int -> Int)
