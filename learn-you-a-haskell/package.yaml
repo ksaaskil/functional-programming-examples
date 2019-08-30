@@ -23,6 +23,7 @@ dependencies:
   - filepath
   - containers
   - acme-missiles # added
+  - random
 
 library:
   source-dirs: src

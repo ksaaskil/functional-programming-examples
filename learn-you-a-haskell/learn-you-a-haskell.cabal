@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ae5ff9487e7926217a04a74e86f2c0b5f077d8235382332b50e832f33b786beb
+-- hash: 981d8d129931498609b8e9df13d74ee9c56a72c19a1ea8e0894e7d680d228a41
 
 name:           learn-you-a-haskell
 version:        0.1.0.0
@@ -49,6 +49,7 @@ library
     , base >=4.7 && <5
     , containers
     , filepath
+    , random
     , text
   default-language: Haskell2010
 
@@ -65,6 +66,7 @@ executable main-exe
     , containers
     , filepath
     , learn-you-a-haskell
+    , random
     , text
   default-language: Haskell2010
 
@@ -82,6 +84,7 @@ executable todo
     , directory
     , filepath
     , learn-you-a-haskell
+    , random
     , text
   default-language: Haskell2010
 
@@ -99,5 +102,6 @@ test-suite hello-haskell-test
     , containers
     , filepath
     , hello-haskell
+    , random
     , text
   default-language: Haskell2010

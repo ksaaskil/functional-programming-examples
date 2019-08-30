@@ -8,7 +8,8 @@ where
 import           Control.Monad
 import           Data.Char
 import           System.IO
-
+import           System.Random
+import           Control.Monad                  ( when )
 -- Pure functions cannot change state of things in the world. To achieve effects,
 -- Haskell uses the IO type.
 
@@ -184,3 +185,38 @@ manualBufferingExample = withFile
         contents <- hGetContents handle
         putStr contents
     )
+
+
+-- Command-line arguments: See ./todo-app/Main.hs.
+
+-- Randomness
+
+-- In Haskell functions are pure, including functions for generating random numbers.
+-- Therefore, functions generating random values take in a generator (created with e.g. `mkStdGen`) and return both a value and the new generator. For example:
+numberBetweenOneAndSix :: Int
+numberBetweenOneAndSix =
+    fst (randomR (1, 6) (mkStdGen 359353) :: (Int, StdGen))
+
+-- Here's an I/O action for generating random strings
+
+genRandomString :: IO ()
+genRandomString = do
+    gen <- getStdGen  -- Ask the system for a good random number generator.
+    putStr $ take 20 (randomRs ('a', 'z') gen)
+
+guessNumber :: IO ()
+guessNumber = do
+    gen <- getStdGen
+    askForNumber gen
+
+askForNumber :: StdGen -> IO ()
+askForNumber gen = do
+    let (randNumber, newGen) = randomR (1, 10) gen :: (Int, StdGen)
+    putStr "Which number in the range from 1 to 10 am I thinking of?"
+    numberString <- getLine
+    when (not $ null numberString) $ do
+        let number = read numberString
+        if randNumber == number
+            then putStrLn "You're correct!"
+            else putStrLn $ "Sorry, it was " ++ show randNumber
+        askForNumber newGen
