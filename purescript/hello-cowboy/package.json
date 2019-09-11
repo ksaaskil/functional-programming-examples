@@ -1,0 +1,10 @@
+{
+  "name": "hello-cowboy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bower": "^1.8.8",
+    "pulp": "^13.0.0"
+  }
+}
