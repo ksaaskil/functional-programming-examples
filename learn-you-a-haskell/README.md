@@ -85,7 +85,7 @@ StartingOut> :r
 stack exec hello-haskell-exe
 ```
 
-### Test
+### Run tests
 
 ```bash
 stack test

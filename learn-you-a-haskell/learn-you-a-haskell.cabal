@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 936c16b32ffb20715717792b35066fda212aaec163d6f4adf6cb73e53d12cfca
+-- hash: 4a6f18ea47df18c951cddde037134b4cdab8053a7894236e59894e6a8c9cb422
 
 name:           learn-you-a-haskell
 version:        0.1.0.0
@@ -93,6 +93,7 @@ test-suite learn-you-a-haskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      RPN
       Paths_learn_you_a_haskell
   hs-source-dirs:
       test

@@ -1,13 +1,11 @@
 import           FunctionallySolvingProblems    ( solveRPN )
 import           Test.HUnit                    as HUnit
+import           RPN                            ( testRPN )
 
-test1 = TestCase $ assertEqual "Should 1+1 equal 2" 2 (1 + 1)
-testRPN1 =
-    TestCase $ assertEqual "Should handle summation" 2 $ solveRPN "1 1 +"
+exampleTest = TestCase $ assertEqual "Should sum 1+1 to 2" 2 (1 + 1)
 
-
-tests = TestList
-    [TestLabel "Example test 1" test1, TestLabel "Solve RPN 1" testRPN1]
+{- tests = TestList
+    [TestLabel "Example test 1" test1, TestLabel "Solve RPN 1" testRPN1] -}
 
 main :: IO HUnit.Counts
-main = HUnit.runTestTT tests
+main = HUnit.runTestTT $ TestList [exampleTest, testRPN]
