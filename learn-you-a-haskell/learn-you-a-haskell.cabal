@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 981d8d129931498609b8e9df13d74ee9c56a72c19a1ea8e0894e7d680d228a41
+-- hash: 7f3375024853504bd451f673835a7033dbb709c8432d454e10130e54f363f4c2
 
 name:           learn-you-a-haskell
 version:        0.1.0.0
@@ -26,6 +26,7 @@ source-repository head
 
 library
   exposed-modules:
+      FunctionallySolvingProblems
       Geometry.Cube
       Geometry.Cuboid
       Geometry.Sphere
