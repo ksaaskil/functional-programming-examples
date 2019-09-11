@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7f3375024853504bd451f673835a7033dbb709c8432d454e10130e54f363f4c2
+-- hash: 936c16b32ffb20715717792b35066fda212aaec163d6f4adf6cb73e53d12cfca
 
 name:           learn-you-a-haskell
 version:        0.1.0.0
@@ -89,7 +89,7 @@ executable todo
     , text
   default-language: Haskell2010
 
-test-suite hello-haskell-test
+test-suite learn-you-a-haskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
@@ -98,11 +98,12 @@ test-suite hello-haskell-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      acme-missiles
+      HUnit
+    , acme-missiles
     , base >=4.7 && <5
     , containers
     , filepath
-    , hello-haskell
+    , learn-you-a-haskell
     , random
     , text
   default-language: Haskell2010

@@ -51,7 +51,7 @@ executables:
       - directory
 
 tests:
-  hello-haskell-test:
+  learn-you-a-haskell-test:
     main: Spec.hs
     source-dirs: test
     ghc-options:
@@ -59,4 +59,5 @@ tests:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - hello-haskell
+      - learn-you-a-haskell
+      - HUnit
