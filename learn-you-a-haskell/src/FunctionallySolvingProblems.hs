@@ -58,5 +58,29 @@ data Label = A | B | C deriving (Eq, Show)
 type Path = [(Label, Int)]
 
 -- Solution should have the type:
-optimalPath :: RoadSystem -> Path
-optimalPath roadSystem = [(B, 10), (C, 30), (A, 5), (C, 20), (B, 2), (B, 8)]
+optimalPath :: RoadSystem -> Path  -- Implemented below
+
+-- Our solution will use a function called roadStep. It takes the optimal paths to current section's A and B and the current section and produces the optimal paths to the next A and B. Like this:
+roadStep :: (Path, Path) -> Section -> (Path, Path)
+roadStep (pathA, pathB) (Section a b c) =
+  let pricesToA       = map snd pathA
+      priceA          = sum pricesToA
+      priceB          = sum $ map snd pathB
+      forwardPriceToA = priceA + a
+      crossPriceToA   = priceB + b + c
+      forwardPriceToB = priceB + b
+      crossPriceToB   = priceA + a + c
+      newPathToA      = if forwardPriceToA <= crossPriceToA
+        then (A, a) : pathA  -- Prepending is much cheaper than adding to the end, so reverse at the end
+        else (C, c) : (B, b) : pathB
+      newPathToB = if forwardPriceToB <= crossPriceToB
+        then (B, b) : pathB
+        else (C, c) : (A, a) : pathA
+  in  (newPathToA, newPathToB)
+
+-- Finding the optimal path is now a simple left fold on the whole roadsystem:
+optimalPath roadSystem =
+  let (bestAPath, bestBPath) = foldl roadStep ([], []) roadSystem
+  in  if sum (map snd bestAPath) <= sum (map snd bestBPath)
+        then reverse bestAPath
+        else reverse bestBPath
