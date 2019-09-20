@@ -1,3 +1,4 @@
+-- Chapter 10: http://learnyouahaskell.com/functionally-solving-problems
 module FunctionallySolvingProblems where
 
 import           Data.List                     as L

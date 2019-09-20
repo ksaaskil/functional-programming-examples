@@ -10,6 +10,8 @@ Code examples from the awesome [Learn You a Haskell](http://learnyouahaskell.com
 - [Chapter 7: Modules](./src/Modules.hs)
 - [Chapter 8: Making our own types and typeclasses](./src/MakingOurOwnTypesAndTypeclasses.hs)
 - [Chapter 9: Input and Output](./src/InputAndOutput.hs)
+- [Chapter 10: Functionally Solving Problems](./src/FunctionallySolvingProblems.hs)
+- [Chapter 11: Functors, Applicative Functors, and Monoids](./src/Functors.hs)
 
 ## Project setup
 
