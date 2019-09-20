@@ -1,6 +1,6 @@
 # Example project using Spago in [2019](https://discourse.purescript.org/t/recommended-tooling-for-purescript-applications-in-2019/948)
 
-Steps:
+### Project initialization
 
 Start project:
 
@@ -43,10 +43,39 @@ These are the contents of `spago.dhall`:
 }
 ```
 
-Compile and run `Main.purs`:
+Build project:
+
+```
+yarn spago build
+```
+
+The project is built in `output/` directory.
+
+Run `Main.purs`:
 
 ```
 yarn spago run
 ```
 
-The project is built in `output/` directory.
+### Install dependencies
+
+Install Halogen:
+
+```
+yarn spago install halogen
+```
+
+`spago.dhall` now looks like this:
+
+```dhall
+{
+ name =
+    "my-project"
+, dependencies =
+    [ "console", "effect", "halogen", "psci-support" ]
+, packages =
+    ./packages.dhall
+, sources =
+    [ "src/**/*.purs", "test/**/*.purs" ]
+}
+```
