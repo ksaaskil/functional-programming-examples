@@ -53,11 +53,10 @@ heathrowToLondon :: RoadSystem
 heathrowToLondon =
   [Section 50 10 30, Section 5 90 20, Section 40 2 25, Section 10 8 0]
 
-
 -- Other type declarations we'll need are a label for a road and a possible path
-data Label = A | B | C deriving (Show)
+data Label = A | B | C deriving (Eq, Show)
 type Path = [(Label, Int)]
 
 -- Solution should have the type:
 optimalPath :: RoadSystem -> Path
-optimalPath roadSystem = []
+optimalPath roadSystem = [(B, 10), (C, 30), (A, 5), (C, 20), (B, 2), (B, 8)]
