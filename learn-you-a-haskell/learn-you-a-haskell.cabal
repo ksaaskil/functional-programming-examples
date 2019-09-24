@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 5adef287d5ad6d3f873161ad4769dc93b53fdb1e13d1ed9f2341382df448b44e
+-- hash: 2fd499b13ed43337759ff3946eeec1f48c304b9faf2155652a0359765fc5abf7
 
 name:           learn-you-a-haskell
 version:        0.1.0.0
@@ -27,12 +27,14 @@ source-repository head
 library
   exposed-modules:
       FunctionallySolvingProblems
+      Functors
       Geometry.Cube
       Geometry.Cuboid
       Geometry.Sphere
       GeometryModule
       HigherOrderFunctions
       InputAndOutput
+      LensTutorial
       Lib
       MakingOurOwnTypesAndTypeclasses
       Modules
@@ -50,6 +52,8 @@ library
     , base >=4.7 && <5
     , containers
     , filepath
+    , lens
+    , lens-tutorial
     , random
     , text
   default-language: Haskell2010
@@ -67,6 +71,8 @@ executable main-exe
     , containers
     , filepath
     , learn-you-a-haskell
+    , lens
+    , lens-tutorial
     , random
     , text
   default-language: Haskell2010
@@ -85,6 +91,8 @@ executable todo
     , directory
     , filepath
     , learn-you-a-haskell
+    , lens
+    , lens-tutorial
     , random
     , text
   default-language: Haskell2010
@@ -106,6 +114,8 @@ test-suite learn-you-a-haskell-test
     , containers
     , filepath
     , learn-you-a-haskell
+    , lens
+    , lens-tutorial
     , random
     , text
   default-language: Haskell2010

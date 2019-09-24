@@ -42,6 +42,7 @@ packages:
 extra-deps:
   - acme-missiles-0.3 # not in the LTS
   - HUnit-1.6.0.0
+  - lens-tutorial-1.0.4@sha256:325b59b7658f035d11386589c57d603ee27573f191ed8380dc2a890102bfe143,1199
 # Override default flag values for local packages and extra-deps
 # flags: {}
 

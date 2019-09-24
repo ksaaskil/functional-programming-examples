@@ -18,6 +18,13 @@ packages:
       sha256: 270a6f8d6ef23eba3a9a1697aa244576abb168d10cb8e4736cf4add2b09eb650
   original:
     hackage: HUnit-1.6.0.0
+- completed:
+    hackage: lens-tutorial-1.0.4@sha256:325b59b7658f035d11386589c57d603ee27573f191ed8380dc2a890102bfe143,1199
+    pantry-tree:
+      size: 279
+      sha256: c04add7d791a173f23f32b25f6fe14151f23e2f8651c0e1a0bcfc6293df9a80c
+  original:
+    hackage: lens-tutorial-1.0.4@sha256:325b59b7658f035d11386589c57d603ee27573f191ed8380dc2a890102bfe143,1199
 snapshots:
 - completed:
     size: 500539

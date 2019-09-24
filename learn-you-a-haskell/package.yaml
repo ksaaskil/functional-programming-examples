@@ -24,6 +24,8 @@ dependencies:
   - containers
   - acme-missiles # added
   - random
+  - lens
+  - lens-tutorial
 
 library:
   source-dirs: src
