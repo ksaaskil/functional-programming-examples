@@ -1,4 +1,4 @@
-import { Lens, Optional, Traversal, fromTraversable } from "monocle-ts";
+import { Lens, Optional, Prism, Traversal, fromTraversable } from "monocle-ts";
 import { array } from "fp-ts/lib/array";
 import { some, none } from "fp-ts/lib/Option";
 
@@ -65,6 +65,13 @@ interface Person {
   firstName: string;
   hobbies: Hobby[];
 }
+
+type Band = {
+  name: string;
+  members: Person[];
+};
+
+type Artist = Person | Band;
 
 describe("monocle-ts", () => {
   describe("lens", () => {
@@ -183,6 +190,47 @@ describe("monocle-ts", () => {
 
       expect(personWithUppercasedHobbyNames.hobbies[0].name).toEqual(
         "SWIMMING"
+      );
+    });
+  });
+  describe("prism", () => {
+    it("allows zooming in on sum types", () => {
+      const exampleArtists: Artist[] = [
+        { firstName: "Elvis Presley", hobbies: [] },
+        {
+          name: "Metallica",
+          members: [
+            { firstName: "James", hobbies: [] },
+            { firstName: "Lars", hobbies: [] },
+            { firstName: "Kirk", hobbies: [] },
+            { firstName: "Robert", hobbies: [] },
+          ],
+        },
+      ];
+
+      const artists: Traversal<Artist[], Artist> = fromTraversable(array)<
+        Artist
+      >();
+
+      const isBand = (a: Artist): a is Band => {
+        return typeof (a as any).members !== "undefined";
+      };
+
+      const bands: Traversal<Artist[], Band> = artists.composePrism(
+        Prism.fromPredicate(isBand)
+      );
+
+      const bandNames: Traversal<Artist[], string> = bands.composeLens(
+        Lens.fromProp<Band>()("name")
+      );
+
+      const upperCaseBandNames: (
+        artists: Artist[]
+      ) => Artist[] = bandNames.modify((name: string) => name.toUpperCase());
+
+      expect(upperCaseBandNames(exampleArtists)[1]).toHaveProperty(
+        "name",
+        "METALLICA"
       );
     });
   });
