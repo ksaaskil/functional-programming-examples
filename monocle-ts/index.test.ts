@@ -76,7 +76,7 @@ describe("monocle-ts", () => {
     expect(employeeToStreetName.get(employee2)).toMatch(/^High/);
   });
   it("allows composing with optionals for nullable values", () => {
-    // Optional that allows
+    // Optional that allows zooming into the (optional) first letter
     const firstLetter = new Optional<string, string>(
       s => (s.length > 0 ? some(s[0]) : none), // getOption
       a => s => a + s.substring(1) // set
@@ -99,5 +99,18 @@ describe("monocle-ts", () => {
     expect(employeeToStreetName.get(upperCaseStreetName(employee))).toMatch(
       /^High/
     );
+  });
+  it("allows working with lists using optionals", () => {
+    const firstNumber = new Optional<Array<number>, number>(
+      s => (s.length > 0 ? some(s[0]) : none), // getOption
+      a => s => [a, ...s.slice(1)] // Set value by replacing the first value in the array
+    );
+
+    expect(firstNumber.getOption([1, 2, 3])).toEqual(some(1));
+    expect(firstNumber.getOption([])).toEqual(none);
+
+    const addOneToFirstNumber = firstNumber.modify(value => value + 1);
+    expect(addOneToFirstNumber([1, 2, 3])).toEqual([2, 2, 3]);
+    expect(addOneToFirstNumber([])).toEqual([]);
   });
 });
