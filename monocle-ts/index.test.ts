@@ -57,9 +57,18 @@ const employee: Employee = {
 const capitalize = (s: string): string =>
   s.substring(0, 1).toUpperCase() + s.substring(1);
 
+interface Hobby {
+  name: string;
+}
+
+interface Person {
+  firstName: string;
+  hobbies: Hobby[];
+}
+
 describe("monocle-ts", () => {
-  describe("lenses", () => {
-    it("allow to modify values inside nested object", () => {
+  describe("lens", () => {
+    it("allows to modify values inside nested object", () => {
       /**
        * Modify value with lens (think of `over` in Control.Lens)
        */
@@ -67,6 +76,7 @@ describe("monocle-ts", () => {
 
       expect(employee2.company.address.street.name).toMatch(/^High/);
     });
+
     it("allows to avoid some boilerplate with 'fromPath'", () => {
       const employeeToStreetName = Lens.fromPath<Employee>()([
         "company",
@@ -79,8 +89,8 @@ describe("monocle-ts", () => {
     });
   });
 
-  describe("optionals", () => {
-    it("allow composing with optionals for nullable values", () => {
+  describe("optional", () => {
+    it("allows composing with optionals for nullable values", () => {
       // Optional that allows zooming into the (optional) first letter
       const firstLetter = new Optional<string, string>(
         s => (s.length > 0 ? some(s[0]) : none), // getOption
@@ -105,7 +115,8 @@ describe("monocle-ts", () => {
         /^High/
       );
     });
-    it("allow working with lists using optionals", () => {
+
+    it("allows working with lists using optionals", () => {
       const firstNumber = new Optional<Array<number>, number>(
         s => (s.length > 0 ? some(s[0]) : none), // getOption
         a => s => [a, ...s.slice(1)] // Set value by replacing the first value in the array
@@ -120,8 +131,8 @@ describe("monocle-ts", () => {
     });
   });
 
-  describe("traversals", () => {
-    it("allow modifying lists", () => {
+  describe("traversal", () => {
+    it("allows modifying lists", () => {
       // A Traversal is the generalisation of an Optional to several targets.
       // In other words, a Traversal allows to focus from a type S into 0 to n values of type A.
       const listOfNumbers = [1, 2, 3];
@@ -134,7 +145,8 @@ describe("monocle-ts", () => {
         4,
       ]);
     });
-    it("allow getting all values via asFold", () => {
+
+    it("allows getting all values via asFold", () => {
       const listOfNumbers = [1, 2, 3];
       const traversal: Traversal<number[], number> = fromTraversable(array)<
         number
@@ -142,6 +154,36 @@ describe("monocle-ts", () => {
       // Get all values with `asFold`:
       const asFold = traversal.asFold();
       expect(asFold.getAll(listOfNumbers)).toEqual(listOfNumbers);
+    });
+
+    it("allows composing with lenses", () => {
+      const person: Person = {
+        firstName: "Eve",
+        hobbies: [{ name: "swimming" }],
+      };
+
+      // Zoom in on hobbies array
+      const hobby: Lens<Person, Hobby[]> = Lens.fromProp<Person>()("hobbies");
+
+      // Traversal for hobbies, for example, `person => [{ name: "swimming "}]`
+      const hobbies: Traversal<Person, Hobby> = hobby.composeTraversal(
+        fromTraversable(array)<Hobby>()
+      );
+      // Traversal for hobby names, for example: `person => ["swimming"]`
+      const hobbyNames: Traversal<Person, string> = hobbies.composeLens(
+        Lens.fromProp<Hobby>()("name")
+      );
+
+      // Function that uppercases all hobby names
+      const upperCaseHobbyNames: (p: Person) => Person = hobbyNames.modify(
+        (s: string) => s.toUpperCase()
+      );
+
+      const personWithUppercasedHobbyNames = upperCaseHobbyNames(person);
+
+      expect(personWithUppercasedHobbyNames.hobbies[0].name).toEqual(
+        "SWIMMING"
+      );
     });
   });
 });
