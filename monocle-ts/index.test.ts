@@ -195,15 +195,31 @@ describe("monocle-ts", () => {
   });
   describe("prism", () => {
     it("allows zooming in on sum types", () => {
+      // A Prism is an optic used to select part of a Sum type, such as types of `Band` in `(Person | Band)[]`
       const exampleArtists: Artist[] = [
-        { firstName: "Elvis Presley", hobbies: [] },
+        {
+          firstName: "Elvis Presley",
+          hobbies: [],
+        },
         {
           name: "Metallica",
           members: [
-            { firstName: "James", hobbies: [] },
-            { firstName: "Lars", hobbies: [] },
-            { firstName: "Kirk", hobbies: [] },
-            { firstName: "Robert", hobbies: [] },
+            {
+              firstName: "James",
+              hobbies: [],
+            },
+            {
+              firstName: "Lars",
+              hobbies: [],
+            },
+            {
+              firstName: "Kirk",
+              hobbies: [],
+            },
+            {
+              firstName: "Robert",
+              hobbies: [],
+            },
           ],
         },
       ];
@@ -213,7 +229,7 @@ describe("monocle-ts", () => {
       >();
 
       const isBand = (a: Artist): a is Band => {
-        return typeof (a as any).members !== "undefined";
+        return Array.isArray((a as any).members);
       };
 
       const bands: Traversal<Artist[], Band> = artists.composePrism(
