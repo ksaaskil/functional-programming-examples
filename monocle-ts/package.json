@@ -1,0 +1,17 @@
+{
+  "name": "monocle-ts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "@types/jest": "^24.0.18",
+    "fp-ts": "^2.0.5",
+    "jest": "^24.9.0",
+    "monocle-ts": "^2.0.0",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
+  }
+}
