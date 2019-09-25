@@ -1,4 +1,11 @@
-import { Lens, Optional, Prism, Traversal, fromTraversable } from "monocle-ts";
+import {
+  Iso,
+  Lens,
+  Optional,
+  Prism,
+  Traversal,
+  fromTraversable,
+} from "monocle-ts";
 import { array } from "fp-ts/lib/array";
 import { some, none } from "fp-ts/lib/Option";
 
@@ -72,6 +79,12 @@ type Band = {
 };
 
 type Artist = Person | Band;
+
+interface Name {
+  firstName: string;
+  secondName: string;
+  lastName: string;
+}
 
 describe("monocle-ts", () => {
   describe("lens", () => {
@@ -248,6 +261,42 @@ describe("monocle-ts", () => {
         "name",
         "METALLICA"
       );
+    });
+  });
+  describe("iso", () => {
+    it("allows converting between elements without loss", () => {
+      const exampleName: Record<string, string> = {
+        firstName: "elvis",
+        secondName: "king",
+        lastName: "presley",
+      };
+
+      const objectToArray = <T>(): Iso<Record<string, T>, Array<[string, T]>> =>
+        new Iso<Record<string, T>, Array<[string, T]>>(
+          s => Object.entries(s),
+          a => a.reduce((q, r) => ({ ...q, [r[0]]: r[1] }), {})
+        );
+
+      // Iso from records to an array of key-value pairs
+      const recordsIso: Iso<
+        Record<string, string>,
+        [string, string][]
+      > = objectToArray<string>();
+
+      // Traversal that traverses all key-value pairs as tuples
+      const records: Traversal<
+        Record<string, string>,
+        [string, string]
+      > = recordsIso.composeTraversal(
+        fromTraversable(array)<[string, string]>()
+      );
+
+      const upperCaseValues = records.modify(([key, value]) => [
+        key,
+        value.toUpperCase(),
+      ]);
+
+      expect(upperCaseValues(exampleName)).toHaveProperty("firstName", "ELVIS");
     });
   });
 });
