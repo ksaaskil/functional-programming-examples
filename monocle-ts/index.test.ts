@@ -195,9 +195,9 @@ describe("monocle-ts", () => {
       );
 
       // Function that uppercases all hobby names
-      const upperCaseHobbyNames: (p: Person) => Person = hobbyNames.modify(
-        (s: string) => s.toUpperCase()
-      );
+      const upperCaseHobbyNames: (
+        p: Person
+      ) => Person = hobbyNames.modify((s: string) => s.toUpperCase());
 
       const personWithUppercasedHobbyNames = upperCaseHobbyNames(person);
 
