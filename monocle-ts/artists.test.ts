@@ -77,12 +77,17 @@ const personToName = Lens.fromProp<Person>()("firstName");
 
 describe("monocle-ts", () => {
   describe("lens", () => {
-    it("allows to modify values inside nested object", () => {
-      const upperCasePersonName = personToName.modify(upperCase);
-
-      const elvisUpperCased = upperCasePersonName(elvis);
-
-      expect(elvisUpperCased).toMatchObject({ firstName: "ELVIS" });
+    it("allows getting values from objects", () => {
+      // We'll see examples of composing lenses below
+      const getName = personToName.get; // (s: Person) => string
+      expect(getName(elvis)).toEqual("Elvis");
+    });
+    it("allows to modify values inside objects", () => {
+      const upperCasePersonName = personToName.modify(upperCase); // (s: Person) => Person
+      const elvisUpperCased = upperCasePersonName(elvis); // Person
+      expect(elvisUpperCased).toMatchObject({
+        firstName: "ELVIS",
+      });
     });
   });
 
@@ -90,10 +95,12 @@ describe("monocle-ts", () => {
     it("allows working with lists using optionals", () => {
       const oldestOptional = new Optional<Array<Person>, Person>(
         personArray => {
+          // How to get the value if exists
           const oldest = maxBy(personArray, "age");
           return oldest ? some(oldest) : none;
-        }, // getOption
+        },
         newPerson => personArray => {
+          // How to set new value
           const oldest = maxBy(personArray, "age");
           if (typeof oldest === "undefined") {
             return [newPerson];
@@ -128,12 +135,12 @@ describe("monocle-ts", () => {
       const upperCaseOldestBandMember = oldestMemberInBand
         .composeLens(nameLens)
         .modify(upperCase);
+
       expect(upperCaseOldestBandMember(metallica).members).toContainEqual(
         expect.objectContaining({
           firstName: "KIRK",
         })
       );
-      expect(upperCaseOldestBandMember(bandWithNoMembers).members).toEqual([]);
     });
   });
 
