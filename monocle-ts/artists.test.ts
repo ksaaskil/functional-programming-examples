@@ -203,9 +203,8 @@ describe("monocle-ts", () => {
   describe.skip("prism", () => {
     it("allows zooming in on sum types", () => {
       // A Prism is an optic used to select part of a Sum type, such as types of `Band` in `(Person | Band)[]`
-      const exampleArtists: Artist[] = [elvis, metallica];
 
-      const artists: Traversal<Artist[], Artist> = fromTraversable(array)<
+      const artistsT: Traversal<Artist[], Artist> = fromTraversable(array)<
         Artist
       >();
 
@@ -213,7 +212,7 @@ describe("monocle-ts", () => {
         return Array.isArray((a as any).members);
       };
 
-      const bands: Traversal<Artist[], Band> = artists.composePrism(
+      const bands: Traversal<Artist[], Band> = artistsT.composePrism(
         Prism.fromPredicate(isBand)
       );
 
@@ -225,7 +224,7 @@ describe("monocle-ts", () => {
         artists: Artist[]
       ) => Artist[] = bandNames.modify((name: string) => name.toUpperCase());
 
-      expect(upperCaseBandNames(exampleArtists)[1]).toHaveProperty(
+      expect(upperCaseBandNames(artists)[1]).toHaveProperty(
         "name",
         "METALLICA"
       );
