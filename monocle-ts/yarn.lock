@@ -1457,6 +1457,11 @@ invariant@^2.2.4:
   dependencies:
     loose-envify "^1.0.0"
 
+io-ts@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/io-ts/-/io-ts-2.1.0.tgz#5623a8eb567686651364443dac6826c2bdc40d64"
+  integrity sha512-GnTYtJRVu8L9QEhJrkJBaVr6aR13IBH+MEIeq0WW0IE1zIk9XzMNqqf220p8InJGYwuoHNTVsHDvBQzFIp4ieg==
+
 is-accessor-descriptor@^0.1.6:
   version "0.1.6"
   resolved "https://registry.yarnpkg.com/is-accessor-descriptor/-/is-accessor-descriptor-0.1.6.tgz#a9e12cb3ae8d876727eeef3843f8a0897b5c98d6"

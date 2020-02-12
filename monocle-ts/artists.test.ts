@@ -8,32 +8,44 @@ import {
 } from "monocle-ts";
 import { array } from "fp-ts/lib/array";
 import { some, none } from "fp-ts/lib/Option";
+import { Either, fold, isLeft, isRight, getOrElse } from "fp-ts/lib/Either";
 import { findIndex, isEqual, maxBy } from "lodash";
+import * as t from "io-ts";
+import { PathReporter } from "io-ts/lib/PathReporter";
 
 const upperCase = (s: string): string => s.toUpperCase();
 
+/* Let's define an io-ts equivalent to
 interface Hobby {
   name: string;
 }
+*/
 
-interface Person {
+const HobbyT = t.interface({ name: t.string });
+type Hobby = t.TypeOf<typeof HobbyT>; // Static type
+
+/* interface Person {
   firstName: string;
   age: number;
   hobbies: Hobby[];
-}
+} */
+const PersonT = t.interface({
+  firstName: t.string,
+  age: t.number,
+  hobbies: t.array(HobbyT),
+});
+type Person = t.TypeOf<typeof PersonT>;
 
-type Band = {
+/* type Band = {
   name: string;
   members: Person[];
-};
+}; */
+const BandT = t.interface({ name: t.string, members: t.array(PersonT) });
+type Band = t.TypeOf<typeof BandT>;
 
-type Artist = Person | Band;
-
-interface Name {
-  firstName: string;
-  secondName: string;
-  lastName: string;
-}
+// type Artist = Person | Band;
+const ArtistT = t.union([PersonT, BandT]);
+type Artist = t.TypeOf<typeof ArtistT>;
 
 const elvis: Artist = {
   firstName: "Elvis",
@@ -43,6 +55,22 @@ const elvis: Artist = {
       name: "singing",
     },
   ],
+};
+
+/**
+ * Small helper function that gets the value from Either if it's right,
+ * throws otherwise
+ * @param either
+ */
+const getOrThrow = <A>(either: Either<t.Errors, A>): A => {
+  return fold(
+    () => {
+      throw Error(
+        `Failed decoding, errors: ${PathReporter.report(either).join(", ")}`
+      );
+    },
+    (val: A) => val
+  )(either);
 };
 
 const metallica: Artist = {
@@ -72,6 +100,37 @@ const metallica: Artist = {
 };
 
 const artists: Artist[] = [elvis, metallica];
+
+describe("io-ts", () => {
+  it("accepts an valid hobby object as HobbyT", () => {
+    const isHobby = HobbyT.is({ name: "Photographing corgis" });
+    expect(isHobby).toBe(true);
+  });
+  it("does not accept an invalid hobby object as HobbyT", () => {
+    const isHobby = HobbyT.is({ name: 66 });
+    expect(isHobby).toBe(false);
+  });
+  it("can decode a hobby from valid input", () => {
+    const maybeHobby = HobbyT.decode({ name: "Petting corgis" });
+    expect(isRight(maybeHobby)).toBe(true);
+  });
+  it("does not decode a hobby from invalid input", () => {
+    const maybeHobby = HobbyT.decode({ name: 67 });
+    expect(isLeft(maybeHobby)).toBe(true);
+  });
+  it("can decode an artist from elvis", () => {
+    const maybeArtist = ArtistT.decode(elvis);
+    expect(isRight(maybeArtist)).toBe(true);
+  });
+  it("validates metallica object as proper Band", () => {
+    expect(BandT.is(metallica)).toBe(true);
+  });
+  it("does not decode an artist from invalid data", () => {
+    const foo = { lastName: "corgi" };
+    const notArtist = ArtistT.decode(foo);
+    expect(isLeft(notArtist)).toBe(true);
+  });
+});
 
 const personToName = Lens.fromProp<Person>()("firstName");
 
