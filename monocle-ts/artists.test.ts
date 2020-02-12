@@ -13,8 +13,6 @@ import { findIndex, isEqual, maxBy } from "lodash";
 import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";
 
-const upperCase = (s: string): string => s.toUpperCase();
-
 /* Let's define an io-ts equivalent to
 interface Hobby {
   name: string;
@@ -49,7 +47,7 @@ type Artist = t.TypeOf<typeof ArtistT>;
 
 const elvis: Artist = {
   firstName: "Elvis",
-  age: 100,
+  age: 85,
   hobbies: [
     {
       name: "singing",
@@ -132,52 +130,63 @@ describe("io-ts", () => {
   });
 });
 
-const personToName = Lens.fromProp<Person>()("firstName");
-
 describe("monocle-ts", () => {
-  describe("lens", () => {
-    it("allows getting values from objects", () => {
+  describe("lenses", () => {
+    it("should be getter", () => {
       // We'll see examples of composing lenses below
-      const getName = personToName.get; // (s: Person) => string
+      const personToName: Lens<Person, string> = Lens.fromProp<Person>()(
+        "firstName"
+      );
+      const getName: (p: Person) => string = personToName.get; // (s: Person) => string
       expect(getName(elvis)).toEqual("Elvis");
     });
-    it("allows to modify values inside objects", () => {
-      const upperCasePersonName = personToName.modify(upperCase); // (s: Person) => Person
-      const elvisUpperCased = upperCasePersonName(elvis); // Person
-      expect(elvisUpperCased).toMatchObject({
-        firstName: "ELVIS",
-      });
+    it("should be a setter", () => {
+      const personToName: Lens<Person, string> = Lens.fromProp<Person>()(
+        "firstName"
+      );
+      const upperCase = (s: string): string => s.toUpperCase();
+      const upperCasePersonName: (p: Person) => Person = personToName.modify(
+        upperCase
+      );
+      const elvisUpperCased = upperCasePersonName(elvis);
+      expect(elvisUpperCased).toHaveProperty("firstName", "ELVIS");
+    });
+    it("allows to avoid some boilerplate with 'fromPath'", () => {
+      const personToAge: Lens<Person, number> = Lens.fromPath<Person>()([
+        "age",
+      ]);
+      expect(personToAge.get(elvis)).toBe(85);
     });
   });
 
   describe("optional", () => {
-    it("allows working with lists using optionals", () => {
-      const oldestOptional = new Optional<Array<Person>, Person>(
-        personArray => {
-          // How to get the value if exists
-          const oldest = maxBy(personArray, "age");
-          return oldest ? some(oldest) : none;
-        },
-        newPerson => personArray => {
-          // How to set new value
-          const oldest = maxBy(personArray, "age");
-          if (typeof oldest === "undefined") {
-            return [newPerson];
-          }
-
-          const maxIndex = findIndex(personArray, p => isEqual(p, oldest));
-          return [
-            ...personArray.slice(0, maxIndex),
-            newPerson,
-            ...personArray.slice(maxIndex + 1),
-          ];
+    const oldestOptional = new Optional<Array<Person>, Person>(
+      personArray => {
+        // How to get the value if exists
+        const oldest = maxBy(personArray, "age");
+        return oldest ? some(oldest) : none;
+      },
+      newPerson => personArray => {
+        // How to set new value
+        const oldest = maxBy(personArray, "age");
+        if (typeof oldest === "undefined") {
+          return [newPerson];
         }
-      );
 
-      const members = Lens.fromProp<Band>()("members");
+        const maxIndex = findIndex(personArray, p => isEqual(p, oldest));
+        return [
+          ...personArray.slice(0, maxIndex),
+          newPerson,
+          ...personArray.slice(maxIndex + 1),
+        ];
+      }
+    );
 
-      const oldestMemberInBand = members.composeOptional(oldestOptional);
+    const members = Lens.fromProp<Band>()("members");
 
+    const oldestMemberInBand = members.composeOptional(oldestOptional);
+
+    it("allows working with lists using optionals", () => {
       expect(oldestMemberInBand.getOption(metallica)).toEqual(
         some(
           expect.objectContaining({
@@ -191,6 +200,8 @@ describe("monocle-ts", () => {
 
       const nameLens = Lens.fromProp<Person>()("firstName");
 
+      const upperCase = (s: string): string => s.toUpperCase();
+
       const upperCaseOldestBandMember = oldestMemberInBand
         .composeLens(nameLens)
         .modify(upperCase);
@@ -200,6 +211,10 @@ describe("monocle-ts", () => {
           firstName: "KIRK",
         })
       );
+    });
+    it("is safe with empty objects", () => {
+      const bandWithNoMembers = { name: "Unknown", members: [] };
+      expect(oldestMemberInBand.getOption(bandWithNoMembers)).toEqual(none);
     });
   });
 
