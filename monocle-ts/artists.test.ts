@@ -8,7 +8,7 @@ import {
 } from "monocle-ts";
 import { array } from "fp-ts/lib/array";
 import { some, none } from "fp-ts/lib/Option";
-import { Either, fold, isLeft, isRight, getOrElse } from "fp-ts/lib/Either";
+import { Either, fold, isLeft, isRight } from "fp-ts/lib/Either";
 import { findIndex, isEqual, maxBy } from "lodash";
 import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";

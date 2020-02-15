@@ -16,7 +16,7 @@ In this first article, we'll use two optics: lenses and optionals. In the next a
 
 We'll use the [io-ts](https://github.com/gcanti/io-ts) library for defining the types for our examples. Using `io-ts` is a small detour, but I think it's useful to understand how it can work together with `monocle-ts`.
 
-The code for this tutorial can be found from [monocle-ts folder](https://github.com/ksaaskil/functional-programming-examples/tree/master/monocle-ts) of [this repository](https://github.com/ksaaskil/functional-programming-examples).
+The code for this tutorial can be found from [monocle-ts/](https://github.com/ksaaskil/functional-programming-examples/tree/master/monocle-ts) folder of [this repository](https://github.com/ksaaskil/functional-programming-examples).
 
 ## Getting started with `io-ts`
 
