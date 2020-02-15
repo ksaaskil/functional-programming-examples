@@ -132,7 +132,57 @@ Elvis is a single person and Metallica is a band, together they form the `artist
 
 ## Lenses
 
-## Traversals
+We'll start with [Lens](https://gcanti.github.io/monocle-ts/modules/index.ts.html#lens-class), which is a composable getter and setter. The signature in `monocle-ts` is
+
+```ts
+export class Lens<S, A> {
+  constructor(readonly get: (s: S) => A, readonly set: (a: A) => (s: S) => S) { ... }
+  ...
+}
+```
+
+We see that the constructor takes a getter and a setter as input arguments. Type variables `S` and `A` stand for the "source" and "target" types, respectively. The getter consumes a source of type `S` and produces an instance of `A`. The setter is a curried function taking a new value `a` of type `A` and a source object `S` and it returns a new object of type `S`.
+
+Lenses can be created by defining which objects they operate on and the target field. Here's a full example of a lens `personToName` of type `Lens<Person, string>`:
+
+```ts
+const personToName: Lens<Person, string> = Lens.fromProp<Person>()("firstName");
+```
+
+Type signature `Lens<Person, string>` means that the lens operates on objects of type `Person` and targets a field of type `string`. Lens is created with the static [Lens.fromProp](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromprop-static-method) method. It requires explicitly setting the type variable `Person`, but it can infer the field type `string` from the type of the field `firstName`.
+
+The getter `(p: Person) => string` can be accessed via `get` property:
+
+```ts
+const getName: (p: Person) => string = (p: Person) => personToName.get(p);
+expect(getName(elvis)).toEqual("Elvis");
+```
+
+Here's how you could use the `personToName.set` as a setter :
+
+```ts
+const setName: (newName: string) => (p: Person) => Person = personToName.set;
+const setJillAsName: (p: Person) => Person = setName("Jill");
+const modified: Person = setJillAsName(elvis);
+expect(modified).toHaveProperty("firstName", "Jill");
+```
+
+Note that `elvis` object remains intact as the setter always creates a new copy of the argument.
+
+With the `modify` method you can create a setter that modifies fields with the given function:
+
+```ts
+const upperCase = (s: string): string => s.toUpperCase();
+const upperCasePersonName: (p: Person) => Person = personToName.modify(
+  upperCase
+);
+const elvisUpperCased = upperCasePersonName(elvis);
+expect(elvisUpperCased).toHaveProperty("firstName", "ELVIS");
+```
+
+This all nice and good, but the true power of optics becomes more clear when you compose them. We'll see examples of this soon when introducing new optics.
+
+## Optional
 
 ## Conclusion and resources
 
@@ -141,13 +191,4 @@ Resources:
 - [A Little Lens Starter Tutorial](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial): Introduction to `lens` package in Haskell
 - [Control.Lens.Tutorial](https://hackage.haskell.org/package/lens-tutorial-1.0.4/docs/Control-Lens-Tutorial.html): Lens tutorial for Haskell beginners
 - [python-lenses](https://github.com/ingolemo/python-lenses): Lens library for Python
-
-## Throwaway
-
-That's where optics such as lenses come in. In this article, I'll go through practical examples of using [monocle-ts]() to work with a complex data structure. Other lens libraries include [lens](http://hackage.haskell.org/package/lens) for Haskell, [monocle](https://github.com/julien-truffaut/Monocle) for Scala, and [python-lenses](https://github.com/ingolemo/python-lenses).
-
-As I'm not an expert on optics, I won't try to go into detail in this article. If you want to learn more about optics, I have found the following resources useful:
-
-- [Lenses](https://medium.com/javascript-scene/lenses-b85976cb0534) by Eric Elliott
-
-You can find the full code for the examples below in [this repository](https://github.com/ksaaskil/functional-programming-examples/tree/master/monocle-ts).
+- [Introduction to Lenses](https://medium.com/javascript-scene/lenses-b85976cb0534) by Eric Elliott

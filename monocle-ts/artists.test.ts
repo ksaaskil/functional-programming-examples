@@ -13,12 +13,11 @@ import { findIndex, isEqual, maxBy } from "lodash";
 import * as t from "io-ts";
 import { PathReporter } from "io-ts/lib/PathReporter";
 
-/* Let's define an io-ts equivalent to
+/*
 interface Hobby {
   name: string;
 }
 */
-
 const HobbyT = t.interface({ name: t.string });
 type Hobby = t.TypeOf<typeof HobbyT>; // Static type
 
@@ -100,30 +99,30 @@ const metallica: Artist = {
 const artists: Artist[] = [elvis, metallica];
 
 describe("io-ts", () => {
-  it("accepts an valid hobby object as HobbyT", () => {
+  it("HobbyT.is accepts an valid hobby object as HobbyT", () => {
     const isHobby = HobbyT.is({ name: "Photographing corgis" });
     expect(isHobby).toBe(true);
   });
-  it("does not accept an invalid hobby object as HobbyT", () => {
+  it("HobbyT.is does not accept an invalid hobby object as HobbyT", () => {
     const isHobby = HobbyT.is({ name: 66 });
     expect(isHobby).toBe(false);
   });
-  it("can decode a hobby from valid input", () => {
+  it("HobbyT.decode can decode a hobby from valid input", () => {
     const maybeHobby = HobbyT.decode({ name: "Petting corgis" });
     expect(isRight(maybeHobby)).toBe(true);
   });
-  it("does not decode a hobby from invalid input", () => {
+  it("HobbyT.decode does not decode a hobby from invalid input", () => {
     const maybeHobby = HobbyT.decode({ name: 67 });
     expect(isLeft(maybeHobby)).toBe(true);
   });
-  it("can decode an artist from elvis", () => {
+  it("ArtistT.decode can decode an artist from elvis", () => {
     const maybeArtist = ArtistT.decode(elvis);
     expect(isRight(maybeArtist)).toBe(true);
   });
-  it("validates metallica object as proper Band", () => {
+  it("BandT.is validates metallica object as proper Band", () => {
     expect(BandT.is(metallica)).toBe(true);
   });
-  it("does not decode an artist from invalid data", () => {
+  it("ArtistT.decode does not decode an artist from invalid data", () => {
     const foo = { lastName: "corgi" };
     const notArtist = ArtistT.decode(foo);
     expect(isLeft(notArtist)).toBe(true);
@@ -132,18 +131,21 @@ describe("io-ts", () => {
 
 describe("monocle-ts", () => {
   describe("lenses", () => {
+    const personToName: Lens<Person, string> = Lens.fromProp<Person>()(
+      "firstName"
+    );
     it("should be getter", () => {
-      // We'll see examples of composing lenses below
-      const personToName: Lens<Person, string> = Lens.fromProp<Person>()(
-        "firstName"
-      );
-      const getName: (p: Person) => string = personToName.get; // (s: Person) => string
+      const getName: (p: Person) => string = (p: Person) => personToName.get(p);
       expect(getName(elvis)).toEqual("Elvis");
     });
     it("should be a setter", () => {
-      const personToName: Lens<Person, string> = Lens.fromProp<Person>()(
-        "firstName"
-      );
+      const setName: (newName: string) => (p: Person) => Person =
+        personToName.set;
+      const setJillAsName: (p: Person) => Person = setName("Jill");
+      const modified: Person = setJillAsName(elvis);
+      expect(modified).toHaveProperty("firstName", "Jill");
+    });
+    it("should be a setter", () => {
       const upperCase = (s: string): string => s.toUpperCase();
       const upperCasePersonName: (p: Person) => Person = personToName.modify(
         upperCase
