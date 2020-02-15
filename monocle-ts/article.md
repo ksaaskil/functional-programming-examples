@@ -1,16 +1,26 @@
-# Introduction to monocle-ts and io-ts
+---
+title: Introduction to composable optics with monocle-ts
+published: false
+description: With some io-ts
+tags: typescript, optics, functional programming
+cover_image: cover image for post, accepts a URL.
+The best size is 1000 x 420.
+series: Introduction to monocle-ts
+---
 
-Giulio Canti's [monocle-ts](https://github.com/gcanti/monocle-ts) library is a partial TypeScript port of Scala's [Monocle](https://julien-truffaut.github.io/Monocle/) library. The latter is described as "an optics library for Scala (and Scala.js) strongly inspired by Haskell Lens." Haskell's [lens](https://hackage.haskell.org/package/lens) library provides "a highly generic toolbox for composing families of getters, folds, isomorphisms, traversals, setters and lenses and their indexed variants."
+Optics are a tool employed in functional programming to zoom into nested data structures. They are designed for composability, allowing you to create complex operations step-by-step by composing simple components. Optics also never modify their input data structures, ensuring your objects stay nice and immutable.
 
-It is quite easy to get overwhelmed by all of this (I am), so I thought I'd write a small tutorial for practical applications of `monocle-ts`. No Haskell knowledge is required.
+Giulio Canti's [monocle-ts](https://github.com/gcanti/monocle-ts) library is a TypeScript port of Scala's [Monocle](https://julien-truffaut.github.io/Monocle/) library, which in turn is inspired by Haskell's [Lens](https://hackage.haskell.org/package/lens) library. It provides "a highly generic toolbox for composing families of getters, folds, isomorphisms, traversals, setters and lenses and their indexed variants."
 
-We'll use the [io-ts](https://github.com/gcanti/io-ts) library for defining the types in our `monocle-ts` examples. Using `io-ts` adds a small overhead to the article but I think it's useful to understand how it works together with `monocle-ts`. If you know `io-ts` already, you can skip the first section.
+In this first article, we'll use two optics: lenses and optionals. In the next article, we'll dive deeper into traversals, isomorphisms, and prisms.
+
+We'll use the [io-ts](https://github.com/gcanti/io-ts) library for defining the types for our examples. Using `io-ts` is a small detour, but I think it's useful to understand how it can work together with `monocle-ts`.
 
 The code for this tutorial can be found from [monocle-ts folder](https://github.com/ksaaskil/functional-programming-examples/tree/master/monocle-ts) of [this repository](https://github.com/ksaaskil/functional-programming-examples).
 
 ## Getting started with `io-ts`
 
-`io-ts` is a run-time type system. Basically it allows you to safely type-check those pesky `Any` objects you get from external sources like user inputs, files, or databases. Let's consider a simple `Hobby` interface defined as follows:
+`io-ts` is a run-time type system. It allows you to add run-time type-checking to those pesky `Any` objects you get from external sources like user inputs, files, or databases. Let's consider a simple `Hobby` interface defined as follows:
 
 ```ts
 interface HobbyI {
@@ -26,7 +36,7 @@ const HobbyT = t.interface({ name: t.string });
 type Hobby = t.TypeOf<typeof HobbyT>; // Static type
 ```
 
-I use the `T` extension to mark `io-ts` types. It's important to notice that the `HobbyT` is a `const`: it's an object that remembers its properties even after the code is transpiled to JavaScript. Therefore, one can use the `HobbyT` object at _run-time_ to check if objects are actually valid hobbies or not.
+I use the `T` extension to mark `io-ts` types. It's important to notice that the `HobbyT` is a `const` and not a type: it's an object that remembers its properties even after the `TypeScript` code is transpiled to JavaScript. Therefore, one can use the `HobbyT` object at _run-time_ to check if objects are actually valid hobbies or not.
 
 `Hobby`, on the other hand, is a static type equivalent to `type Hobby = { name: string }`. `Hobby` is a pure TypeScript thing and does not exist anymore after transpilation.
 
@@ -58,13 +68,13 @@ it("does not decode a hobby from invalid input", () => {
 });
 ```
 
-`decode` method returns an [Either](https://gcanti.github.io/fp-ts/modules/Either.ts.html) object, where the value can be "left" or "right" corresponding to failure or success, respectively. If there's an error, the either contains a "left" of `t.Errors` type defined as follows:
+`decode` method returns an [Either](https://gcanti.github.io/fp-ts/modules/Either.ts.html) object, whose value can be "left" or "right" corresponding to either failure or success, respectively. If there's an error, the either contains a "left" of `t.Errors` type defined as follows:
 
 ```ts
 export interface Errors extends Array<ValidationError> {}
 ```
 
-Validation errors can be printed with, for example, the [PathReporter](https://github.com/gcanti/io-ts#error-reporters) utility.
+Validation errors can be printed with, for example, the [PathReporter](https://github.com/gcanti/io-ts#error-reporters) utility. You can read more about the `Either` type in my [previous article on `fp-ts`](https://dev.to/ksaaskil/using-fp-ts-for-http-requests-and-validation-131c).
 
 Here are the rest of the types we'll need:
 
@@ -180,7 +190,7 @@ const elvisUpperCased = upperCasePersonName(elvis);
 expect(elvisUpperCased).toHaveProperty("firstName", "ELVIS");
 ```
 
-This all nice and good, but the true power of optics becomes more clear when you compose them. We'll see examples of this soon when introducing new optics.
+This all nice and good, but the true power of optics becomes clearer when you start to compose them. We'll see examples of this soon when introducing new optics.
 
 ## Optional
 
@@ -188,6 +198,7 @@ This all nice and good, but the true power of optics becomes more clear when you
 
 Resources:
 
+- [Giulio Canti's introduction to optics](https://medium.com/@gcanti/introduction-to-optics-lenses-and-prisms-3230e73bfcfe)
 - [A Little Lens Starter Tutorial](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial): Introduction to `lens` package in Haskell
 - [Control.Lens.Tutorial](https://hackage.haskell.org/package/lens-tutorial-1.0.4/docs/Control-Lens-Tutorial.html): Lens tutorial for Haskell beginners
 - [python-lenses](https://github.com/ingolemo/python-lenses): Lens library for Python
