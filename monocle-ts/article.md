@@ -159,22 +159,23 @@ Lenses can be created by defining which objects they operate on and the target f
 const personToName: Lens<Person, string> = Lens.fromProp<Person>()("firstName");
 ```
 
-Type signature `Lens<Person, string>` means that the lens operates on objects of type `Person` and targets a field of type `string`. Lens is created with the static [Lens.fromProp](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromprop-static-method) method. It requires explicitly setting the type variable `Person`, but it can infer the field type `string` from the type of the field `firstName`.
+Type signature `Lens<Person, string>` means that the lens operates on objects of type `Person` and targets a field of type `string`. Lens is created with the static [Lens.fromProp](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromprop-static-method) method. It requires explicitly setting the type variable `Person`, but it can infer the field type `string` from the type of the field `firstName`. Other ways to create lenses from scratch are the static [fromPath](https://gcanti.github.io/monocle-ts/modules/index.ts.html#frompath-static-method), [fromProps](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromprops-static-method) and [fromNullableProp](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromnullableprop-static-method) methods of the `Lens` class.
 
-The getter `(p: Person) => string` can be accessed via `get` property:
+The lens getter `(p: Person) => string` can be accessed via `get` property:
 
 ```ts
 const getName: (p: Person) => string = (p: Person) => personToName.get(p);
 expect(getName(elvis)).toEqual("Elvis");
 ```
 
-Here's how you could use the `personToName.set` as a setter :
+Here's how you could use the `personToName.set` as a setter:
 
 ```ts
 const setName: (newName: string) => (p: Person) => Person = personToName.set;
 const setJillAsName: (p: Person) => Person = setName("Jill");
 const modified: Person = setJillAsName(elvis);
 expect(modified).toHaveProperty("firstName", "Jill");
+expect(elvis).toHaveProperty("firstName", "Elvis"); // Unchanged
 ```
 
 Note that `elvis` object remains intact as the setter always creates a new copy of the argument.
@@ -198,8 +199,9 @@ This all nice and good, but the true power of optics becomes clearer when you st
 
 Resources:
 
-- [Giulio Canti's introduction to optics](https://medium.com/@gcanti/introduction-to-optics-lenses-and-prisms-3230e73bfcfe)
+- [Introduction to optics](https://medium.com/@gcanti/introduction-to-optics-lenses-and-prisms-3230e73bfcfe) by Giulio Canti
 - [A Little Lens Starter Tutorial](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial): Introduction to `lens` package in Haskell
+- [Optics reference](https://julien-truffaut.github.io/Monocle/optics.html) from the Monocle documentation
 - [Control.Lens.Tutorial](https://hackage.haskell.org/package/lens-tutorial-1.0.4/docs/Control-Lens-Tutorial.html): Lens tutorial for Haskell beginners
 - [python-lenses](https://github.com/ingolemo/python-lenses): Lens library for Python
 - [Introduction to Lenses](https://medium.com/javascript-scene/lenses-b85976cb0534) by Eric Elliott

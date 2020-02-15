@@ -144,6 +144,7 @@ describe("monocle-ts", () => {
       const setJillAsName: (p: Person) => Person = setName("Jill");
       const modified: Person = setJillAsName(elvis);
       expect(modified).toHaveProperty("firstName", "Jill");
+      expect(elvis).toHaveProperty("firstName", "Elvis"); // Unchanged
     });
     it("should be a setter", () => {
       const upperCase = (s: string): string => s.toUpperCase();
