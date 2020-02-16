@@ -246,13 +246,72 @@ How's one supposed to know what `set` is supposed to do? The answer lies in opti
 
 The first two laws essentially ensure that `getOption` and `set` are "inverse" operations. The last one states that `set` is idempotent. If `set` added the new value to an empty array, the first law would be violated. If `set` prepended the new value to the existing array, the third law would be violated. I won't go deeper into laws of optics in this article, but beware: when rolling out your own optics, make sure that the laws hold. You may want to use a property based testing library such as [`fastcheck`](https://github.com/dubzzz/fast-check) to be sure.
 
-In the next article, we'll get to know `Traversal` and `Fold` to see how to zoom into containers with multiple targets, like arrays and dictionaries.
+Now that we've defined `getOption` and `set` for our `Optional` targeting the first value of the band, let's compose it with `members` Lens:
 
-## Conclusion and resources
+```ts
+const membersLens = Lens.fromProp<Band>()("members");
+const head: Optional<Array<Person>, Person> = new Optional<
+  Array<Person>,
+  Person
+>(getOption, set);
+
+const bandToFirstMember: Optional<Band, Person> = membersLens.composeOptional(
+  head
+);
+```
+
+We've written our first optics composition! Let's see how it works for a band containing members:
+
+```ts
+expect(bandToFirstMember.getOption(metallica)).toEqual(
+  some(
+    expect.objectContaining({
+      firstName: "James",
+    })
+  )
+);
+```
+
+The `getOption` returns the first member of the band wrapped in `Option` as expected. Let's try it on an empty band:
+
+```ts
+const bandWithNoMembers: Band = {
+  name: "Unknown",
+  members: [],
+};
+expect(bandToFirstMember.getOption(bandWithNoMembers)).toEqual(none);
+```
+
+In this case `getOption` returns a `none` as expected. Let's go even further and compose `bandToFirstMember` with a lens zooming into the `firstName` property and use it to modify the name:
+
+```ts
+const nameLens = Lens.fromProp<Person>()("firstName");
+const nameOptional: Optional<Band, string> = bandToFirstMember.composeLens(
+  nameLens
+);
+
+const upperCase = (s: string): string => s.toUpperCase();
+
+const upperCaseFirstBandMemberName = nameOptional.modify(upperCase);
+
+expect(upperCaseFirstBandMemberName(metallica).members).toContainEqual(
+  expect.objectContaining({
+    firstName: "JAMES",
+  })
+);
+```
+
+See [artists.test.ts](https://github.com/ksaaskil/functional-programming-examples/blob/master/monocle-ts/artists.test.ts) in the accompanying repository for an example of how to zoom into the oldest member of the band.
+
+`Optional` allows us to zoom into values that may not exist. In the next article, we'll see how `Traversal` and `Fold` can be used to zoom into multiple values (like all members of the band).
+
+## Conclusion
+
+That concludes our introduction to optics with `monocle-ts`! Please leave a comment if you made it all the way to the end, I appreciate all feedback.
 
 Finally, I'd like to mention that I think Giulio Canti's functional programming libraries for TypeScript (`fp-ts`, `monocle-ts`, `io-ts`, `hyper-ts`) all make very good repositories for contributions. Documentation is quite terse and, as far as I know, the author is very open to making the packages more easily approachable to newcomers. So if you read the documentation and find that a killer function is missing documentation or the existing example is broken, shoot a pull request with your own example! I did it too, once :)
 
-Resources:
+## Resources:
 
 - [Introduction to optics](https://medium.com/@gcanti/introduction-to-optics-lenses-and-prisms-3230e73bfcfe) by Giulio Canti
 - [A Little Lens Starter Tutorial](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial): Introduction to `lens` package in Haskell
