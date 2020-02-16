@@ -7,7 +7,7 @@ import {
   fromTraversable,
 } from "monocle-ts";
 import { array } from "fp-ts/lib/array";
-import { some, none } from "fp-ts/lib/Option";
+import { fromNullable, some, none, Option } from "fp-ts/lib/Option";
 import { Either, fold, isLeft, isRight } from "fp-ts/lib/Either";
 import { findIndex, isEqual, maxBy } from "lodash";
 import * as t from "io-ts";
@@ -163,53 +163,101 @@ describe("monocle-ts", () => {
   });
 
   describe("optional", () => {
-    const oldestOptional = new Optional<Array<Person>, Person>(
-      personArray => {
-        // How to get the value if exists
-        const oldest = maxBy(personArray, "age");
-        return oldest ? some(oldest) : none;
-      },
-      newPerson => personArray => {
-        // How to set new value
-        return personArray.length === 0
-          ? [newPerson]
-          : [...personArray, newPerson];
-      }
-    );
+    /**
+     * Laws for Optional:
+     * getOption(s).fold(() => s, a => set(a)(s)) = s
+     * getOption(set(a)(s)) = getOption(s).map(_ => a)
+     * set(a)(set(a)(s)) = set(a)(s)
+     */
+    const membersLens = Lens.fromProp<Band>()("members");
 
-    const members = Lens.fromProp<Band>()("members");
+    describe("head", () => {
+      const getOption: (ps: Person[]) => Option<Person> = (
+        personArray: Person[]
+      ) => (personArray.length === 0 ? none : some(personArray[0]));
 
-    const oldestMemberInBand = members.composeOptional(oldestOptional);
+      const set: (p: Person) => (ps: Person[]) => Person[] = (p: Person) => (
+        ps: Person[]
+      ) => (ps.length === 0 ? [] : [p, ...ps.slice(1)]);
 
-    it("allows working with lists using optionals", () => {
-      expect(oldestMemberInBand.getOption(metallica)).toEqual(
-        some(
-          expect.objectContaining({
-            firstName: "Kirk",
-          })
-        )
-      );
+      const head = new Optional<Array<Person>, Person>(getOption, set);
 
-      const bandWithNoMembers = { name: "Unknown", members: [] };
-      expect(oldestMemberInBand.getOption(bandWithNoMembers)).toEqual(none);
+      const bandToFirstMember: Optional<
+        Band,
+        Person
+      > = membersLens.composeOptional(head);
 
-      const nameLens = Lens.fromProp<Person>()("firstName");
-
-      const upperCase = (s: string): string => s.toUpperCase();
-
-      const upperCaseOldestBandMember = oldestMemberInBand
-        .composeLens(nameLens)
-        .modify(upperCase);
-
-      expect(upperCaseOldestBandMember(metallica).members).toContainEqual(
-        expect.objectContaining({
-          firstName: "KIRK",
-        })
-      );
+      it("allows getting the first member of the band", () => {
+        expect(bandToFirstMember.getOption(metallica)).toEqual(
+          some(
+            expect.objectContaining({
+              firstName: "James",
+            })
+          )
+        );
+      });
     });
-    it("is safe with empty objects", () => {
-      const bandWithNoMembers = { name: "Unknown", members: [] };
-      expect(oldestMemberInBand.getOption(bandWithNoMembers)).toEqual(none);
+
+    describe("oldest member", () => {
+      const getOption: (ps: Person[]) => Option<Person> = (
+        personArray: Person[]
+      ) => fromNullable(maxBy(personArray, "age"));
+
+      const set: (p: Person) => (ps: Person[]) => Person[] = (p: Person) => (
+        ps: Person[]
+      ) => {
+        const oldest = maxBy(ps, "age");
+        if (!oldest) {
+          return [];
+        }
+
+        const indexOfOldest = findIndex(ps, (other: Person) =>
+          isEqual(oldest, other)
+        );
+
+        return [
+          ...ps.slice(0, indexOfOldest),
+          p,
+          ...ps.slice(indexOfOldest + 1),
+        ];
+      };
+
+      const oldestOptional = new Optional<Array<Person>, Person>(
+        getOption,
+        set
+      );
+      const oldestMemberInBand = membersLens.composeOptional(oldestOptional);
+
+      it("allows working with lists using optionals", () => {
+        expect(oldestMemberInBand.getOption(metallica)).toEqual(
+          some(
+            expect.objectContaining({
+              firstName: "Kirk",
+            })
+          )
+        );
+
+        const nameLens = Lens.fromProp<Person>()("firstName");
+
+        const upperCase = (s: string): string => s.toUpperCase();
+
+        const upperCaseOldestBandMember = oldestMemberInBand
+          .composeLens(nameLens)
+          .modify(upperCase);
+
+        expect(upperCaseOldestBandMember(metallica).members).toContainEqual(
+          expect.objectContaining({
+            firstName: "KIRK",
+          })
+        );
+      });
+      it("is safe with empty objects", () => {
+        const bandWithNoMembers = {
+          name: "Unknown",
+          members: [],
+        };
+        expect(oldestMemberInBand.getOption(bandWithNoMembers)).toEqual(none);
+      });
     });
   });
 

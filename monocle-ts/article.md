@@ -206,7 +206,7 @@ Similarly to `Lens`, `Optional` is a generic class with two type variables `S` a
 
 Like `Lens`, also `Optional` has many alternatives for constructing one: [`fromPath`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#optionalfrompath-interface), [`fromNullableProp`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromnullableprop-static-method-1), [`fromOptionProp`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromoptionprop-static-method), and [`OptionalFromPath`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#optionalfrompath-interface). There are good examples in the documentation for how to use them.
 
-For practice, let's construct an `Optional` from scratch. We want to create an `Optional` that allows accessing the oldest member of a band. Assuming we allow bands that have no members at all, the oldest band member may not exist, so we want to safely handle that situation.
+For practice, let's construct an `Optional` from scratch. We create an `Optional` that allows accessing the first member of the band. Assuming we allow bands to have no members at all, the first band member may not exist, so we want to safely handle that situation.
 
 Remember we defined our band type as follows:
 
@@ -217,15 +217,48 @@ type Band = {
 };
 ```
 
-I've written it in TypeScript here instead of `io-ts` now for clarity. Assume that we already have our `members` field of type `Band`, and now we want the band's oldest member. The type signature for our `oldestMember` should then be `Optional<Array<Person>, Person>`. The constructor first takes a `getOption` method of type `(persons: Person[]) => Option<Person>`.
+Assume that we already have our `members` field of type `Band`, and now we want to access the first member. A function returning the first value of an array is typically called `head`. The type signature for our `head` should then be `Optional<Array<Person>, Person>`. The constructor first takes a `getOption` method of type `(persons: Person[]) => Option<Person>`. Here's how we'd safely get the first member of the band:
+
+```ts
+import { some, none } from "fp-ts/lib/Option";
+
+const getOption: (ps: Person[]) => Option<Person> = (personArray: Person[]) =>
+  personArray.length === 0 ? none : some(personArray[0]);
+```
+
+The helper functions `none` and `some` allow creating options with empty and non-empty values, respectively.
+
+Now we need to define the `set` function for our `Optional<Array<Person>, Person>`. The required signature is `set: (p: Person) => (ps: Person[]) => Person[]`. What is `set` supposed to do? It's supposed the set a person as the first member of the array if the array is not empty. Here's our implementation:
+
+```ts
+const set: (p: Person) => (ps: Person[]) => Person[] = (p: Person) => (
+  ps: Person[]
+) => (ps.length === 0 ? [] : [p, ...ps.slice(1)]);
+```
+
+It's very important to notice here what `set` does _not_ do. First, it does not add the given person to the array if the array is empty. `Optional` should only work as a setter when the target value would be non-empty. If the target value is empty, the setter should be no-op. Second, `set` does not prepend given person to the array but replaces the old value with the new value, therefore keeping the length of the list intact.
+
+How's one supposed to know what `set` is supposed to do? The answer lies in optics laws. To be properly composable, every implementation for an optic such as `Lens` or `Optional` must obey specific laws. For Optional, the laws for `getOption` and `set` [are](https://gcanti.github.io/monocle-ts/modules/index.ts.html#optional-class)
+
+1. `getOption(s).fold(() => s, a => set(a)(s)) = s`
+1. `getOption(set(a)(s)) = getOption(s).map(_ => a)`
+1. `set(a)(set(a)(s)) = set(a)(s)`
+
+The first two laws essentially ensure that `getOption` and `set` are "inverse" operations. The last one states that `set` is idempotent. If `set` added the new value to an empty array, the first law would be violated. If `set` prepended the new value to the existing array, the third law would be violated. I won't go deeper into laws of optics in this article, but beware: when rolling out your own optics, make sure that the laws hold. You may want to use a property based testing library such as [`fastcheck`](https://github.com/dubzzz/fast-check) to be sure.
+
+In the next article, we'll get to know `Traversal` and `Fold` to see how to zoom into containers with multiple targets, like arrays and dictionaries.
 
 ## Conclusion and resources
+
+Finally, I'd like to mention that I think Giulio Canti's functional programming libraries for TypeScript (`fp-ts`, `monocle-ts`, `io-ts`, `hyper-ts`) all make very good repositories for contributions. Documentation is quite terse and, as far as I know, the author is very open to making the packages more easily approachable to newcomers. So if you read the documentation and find that a killer function is missing documentation or the existing example is broken, shoot a pull request with your own example! I did it too, once :)
 
 Resources:
 
 - [Introduction to optics](https://medium.com/@gcanti/introduction-to-optics-lenses-and-prisms-3230e73bfcfe) by Giulio Canti
 - [A Little Lens Starter Tutorial](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial): Introduction to `lens` package in Haskell
 - [Optics reference](https://julien-truffaut.github.io/Monocle/optics.html) from the Monocle documentation
+- [Optics in TypeScript](https://medium.com/pleasework/optics-in-typescript-c1a190fb3963)
+  by Mike Solomon
 - [Control.Lens.Tutorial](https://hackage.haskell.org/package/lens-tutorial-1.0.4/docs/Control-Lens-Tutorial.html): Lens tutorial for Haskell beginners
 - [python-lenses](https://github.com/ingolemo/python-lenses): Lens library for Python
 - [Introduction to Lenses](https://medium.com/javascript-scene/lenses-b85976cb0534) by Eric Elliott
