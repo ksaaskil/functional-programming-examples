@@ -2,17 +2,18 @@
 title: Introduction to composable optics with monocle-ts
 published: false
 description: With io-ts, Elvis and Metallica
-tags: typescript, optics, functional programming
+cover_image: https://dev-to-uploads.s3.amazonaws.com/i/y2qfq36rrsa4avuf9yoa.jpg
+tags: typescript, optics, functional, programming, fp, javascript
 series: Introduction to optics with monocle-ts
 ---
 
-Optics are a tool employed in functional programming to zoom into nested data structures. They are designed for composability, allowing you to create complex operations step-by-step by composing simple components. Optics also never modify their input data structures, ensuring your objects stay nice and immutable.
+Optics are a functional programming toolbox for zooming into nested data structures. They are designed for composability, allowing you to create complex operations step-by-step by composing simple components. Optics also never modify their input data structures, ensuring your objects stay nice and immutable.
 
 Giulio Canti's [monocle-ts](https://github.com/gcanti/monocle-ts) library is a TypeScript port of Scala's [Monocle](https://julien-truffaut.github.io/Monocle/) library, which in turn is inspired by Haskell's [Lens](https://hackage.haskell.org/package/lens) library. It provides "a highly generic toolbox for composing families of getters, folds, isomorphisms, traversals, setters and lenses and their indexed variants."
 
 In this first article, we'll use two optics: lenses and optionals. In the next article, we'll dive deeper into traversals, isomorphisms, and prisms.
 
-We'll use the [io-ts](https://github.com/gcanti/io-ts) library for defining the types for our examples. Using `io-ts` is a small detour, but I think it's useful to understand how it can work together with `monocle-ts`.
+We'll use the [io-ts](https://github.com/gcanti/io-ts) library for defining the types for our examples. Using `io-ts` is a small detour and not actually required for the first article, but we'll see later how it can work together with optics such as `Prism` to zoom into values of specific type.
 
 The code for this tutorial can be found in the [monocle-ts](https://github.com/ksaaskil/functional-programming-examples/tree/master/monocle-ts) folder of [this repository](https://github.com/ksaaskil/functional-programming-examples). You can also find Jest tests containing all code from thi article.
 
