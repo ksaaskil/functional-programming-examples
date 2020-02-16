@@ -3,8 +3,6 @@ title: Introduction to composable optics with monocle-ts
 published: false
 description: With some io-ts
 tags: typescript, optics, functional programming
-cover_image: cover image for post, accepts a URL.
-The best size is 1000 x 420.
 series: Introduction to monocle-ts
 ---
 
@@ -159,7 +157,7 @@ Lenses can be created by defining which objects they operate on and the target f
 const personToName: Lens<Person, string> = Lens.fromProp<Person>()("firstName");
 ```
 
-Type signature `Lens<Person, string>` means that the lens operates on objects of type `Person` and targets a field of type `string`. Lens is created with the static [Lens.fromProp](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromprop-static-method) method. It requires explicitly setting the type variable `Person`, but it can infer the field type `string` from the type of the field `firstName`. Other ways to create lenses from scratch are the static [fromPath](https://gcanti.github.io/monocle-ts/modules/index.ts.html#frompath-static-method), [fromProps](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromprops-static-method) and [fromNullableProp](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromnullableprop-static-method) methods of the `Lens` class.
+Type signature `Lens<Person, string>` means that the lens operates on objects of type `Person` and targets a field of type `string`. Lens is created with the static [Lens.fromProp](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromprop-static-method) method. It requires explicitly setting the type variable `Person`, but it can infer the field type `string` from the type of the field `firstName`. Other ways to create lenses from scratch are the static [fromPath](https://gcanti.github.io/monocle-ts/modules/index.ts.html#frompath-static-method), [fromProps](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromprops-static-method) and [fromNullableProp](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromnullableprop-static-method) methods of the `Lens` class. You can also use [LensFromPath](https://gcanti.github.io/monocle-ts/modules/index.ts.html#lensfrompath-interface).
 
 The lens getter `(p: Person) => string` can be accessed via `get` property:
 
@@ -194,6 +192,32 @@ expect(elvisUpperCased).toHaveProperty("firstName", "ELVIS");
 This all nice and good, but the true power of optics becomes clearer when you start to compose them. We'll see examples of this soon when introducing new optics.
 
 ## Optional
+
+[`Optional`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#optional-class) is an optic for values that may not exist. The signature is as follows:
+
+```ts
+export class Optional<S, A> {
+  constructor(readonly getOption: (s: S) => Option<A>, readonly set: (a: A) => (s: S) => S) { ... }
+  ...
+}
+```
+
+Similarly to `Lens`, `Optional` is a generic class with two type variables `S` and `A`. Also similarly to `Lens`, the constructor of `Optional` has input arguments get and set methods, with the exception that `getOption` returns an `Option<A>`. `Option` is a container that may contain a value of type `A`. For an introduction to `Option`, see `fp-ts` [documentation](https://gcanti.github.io/fp-ts/modules/Option.ts.html). Be careful not to confuse the type class `Option` with the optic `Optional`!
+
+Like `Lens`, also `Optional` has many alternatives for constructing one: [`fromPath`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#optionalfrompath-interface), [`fromNullableProp`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromnullableprop-static-method-1), [`fromOptionProp`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#fromoptionprop-static-method), and [`OptionalFromPath`](https://gcanti.github.io/monocle-ts/modules/index.ts.html#optionalfrompath-interface). There are good examples in the documentation for how to use them.
+
+For practice, let's construct an `Optional` from scratch. We want to create an `Optional` that allows accessing the oldest member of a band. Assuming we allow bands that have no members at all, the oldest band member may not exist, so we want to safely handle that situation.
+
+Remember we defined our band type as follows:
+
+```ts
+type Band = {
+  name: string;
+  members: Person[];
+};
+```
+
+I've written it in TypeScript here instead of `io-ts` now for clarity. Assume that we already have our `members` field of type `Band`, and now we want the band's oldest member. The type signature for our `oldestMember` should then be `Optional<Array<Person>, Person>`. The constructor first takes a `getOption` method of type `(persons: Person[]) => Option<Person>`.
 
 ## Conclusion and resources
 

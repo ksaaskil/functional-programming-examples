@@ -70,7 +70,7 @@ const getOrThrow = <A>(either: Either<t.Errors, A>): A => {
   )(either);
 };
 
-const metallica: Artist = {
+const metallica: Band = {
   name: "Metallica",
   members: [
     {
@@ -171,17 +171,9 @@ describe("monocle-ts", () => {
       },
       newPerson => personArray => {
         // How to set new value
-        const oldest = maxBy(personArray, "age");
-        if (typeof oldest === "undefined") {
-          return [newPerson];
-        }
-
-        const maxIndex = findIndex(personArray, p => isEqual(p, oldest));
-        return [
-          ...personArray.slice(0, maxIndex),
-          newPerson,
-          ...personArray.slice(maxIndex + 1),
-        ];
+        return personArray.length === 0
+          ? [newPerson]
+          : [...personArray, newPerson];
       }
     );
 
