@@ -15,7 +15,7 @@ In this first article, we'll use two optics: lenses and optionals. In the next a
 
 We'll use the [io-ts](https://github.com/gcanti/io-ts) library for defining the types for our examples. Using `io-ts` is a small detour and not actually required for the first article, but we'll see later how it can work together with optics such as `Prism` to zoom into values of specific type.
 
-The code for this tutorial can be found in the [monocle-ts](https://github.com/ksaaskil/functional-programming-examples/tree/master/monocle-ts) folder of [this repository](https://github.com/ksaaskil/functional-programming-examples). You can also find Jest tests containing all code from thi article.
+The code for this tutorial can be found in the [monocle-ts](https://github.com/ksaaskil/functional-programming-examples/tree/master/monocle-ts) folder of [this repository](https://github.com/ksaaskil/functional-programming-examples).
 
 ## Getting started with `io-ts`
 
