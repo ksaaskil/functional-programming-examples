@@ -196,6 +196,32 @@ describe("monocle-ts", () => {
           )
         );
       });
+
+      it("is safe with empty band", () => {
+        const bandWithNoMembers: Band = {
+          name: "Unknown",
+          members: [],
+        };
+        expect(bandToFirstMember.getOption(bandWithNoMembers)).toEqual(none);
+      });
+
+      it("allows composition with other lenses", () => {
+        const nameLens = Lens.fromProp<Person>()("firstName");
+        const nameOptional: Optional<
+          Band,
+          string
+        > = bandToFirstMember.composeLens(nameLens);
+
+        const upperCase = (s: string): string => s.toUpperCase();
+
+        const upperCaseFirstBandMemberName = nameOptional.modify(upperCase);
+
+        expect(upperCaseFirstBandMemberName(metallica).members).toContainEqual(
+          expect.objectContaining({
+            firstName: "JAMES",
+          })
+        );
+      });
     });
 
     describe("oldest member", () => {
