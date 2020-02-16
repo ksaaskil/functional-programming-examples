@@ -86,15 +86,11 @@ type Person = t.TypeOf<typeof PersonT>;
 
 const BandT = t.interface({ name: t.string, members: t.array(PersonT) });
 type Band = t.TypeOf<typeof BandT>;
-
-// type Artist = Person | Band;
-const ArtistT = t.union([PersonT, BandT]);
-type Artist = t.TypeOf<typeof ArtistT>;
 ```
 
-`Person` is an object with `firstName`, `age` and an array of hobbies. A band is an object with `name` and `members`, where `members` is a list of persons. Finally, `Artist` is defined as being either a single person or a band.
+`Person` is an object with `firstName`, `age` and an array of hobbies. A band is an object with `name` and `members`, where `members` is a list of persons.
 
-We also define a few objects:
+We also define a few objects we'll work with:
 
 ```ts
 const elvis: Person = {
@@ -132,15 +128,13 @@ const metallica: Band = {
     },
   ],
 };
-
-const artists: Artist[] = [elvis, metallica];
 ```
 
-Elvis is a single person and Metallica is a band, together they form the `artists` array.
+Elvis is a single person and Metallica is a band with five members.
 
 ## Lenses
 
-We'll start with [Lens](https://gcanti.github.io/monocle-ts/modules/index.ts.html#lens-class), which is a composable getter and setter. The signature in `monocle-ts` is
+We'll start with [Lens](https://gcanti.github.io/monocle-ts/modules/index.ts.html#lens-class), which is a composable getter and setter. As customary in functional programming, we start by looking at the type signature to understand what's going on:
 
 ```ts
 export class Lens<S, A> {
@@ -244,9 +238,11 @@ How's one supposed to know what `set` is supposed to do? The answer lies in opti
 1. `getOption(set(a)(s)) = getOption(s).map(_ => a)`
 1. `set(a)(set(a)(s)) = set(a)(s)`
 
-The first two laws essentially ensure that `getOption` and `set` are "inverse" operations. The last one states that `set` is idempotent. If `set` added the new value to an empty array, the first law would be violated. If `set` prepended the new value to the existing array, the third law would be violated. I won't go deeper into laws of optics in this article, but beware: when rolling out your own optics, make sure that the laws hold. You may want to use a property based testing library such as [`fastcheck`](https://github.com/dubzzz/fast-check) to be sure.
+The first two laws essentially ensure that `getOption` and `set` are "inverse" operations. The last one states that `set` is idempotent.
 
-Now that we've defined `getOption` and `set` for our `Optional` targeting the first value of the band, let's compose it with `members` Lens:
+If our `set` function for `head` added the new value to an empty array, the first law would be violated. If our `set` prepended the given value to the existing array, the third law would be violated. I won't go deeper into laws of optics in this article, but beware: when rolling out your own optics, make sure that the laws hold. You may want to use a property based testing library such as [`fastcheck`](https://github.com/dubzzz/fast-check) to be sure.
+
+Now that we've defined `getOption` and `set` for our `Optional` targeting the first value of the band, let's compose it with the `members` Lens:
 
 ```ts
 const membersLens = Lens.fromProp<Band>()("members");
@@ -301,7 +297,7 @@ expect(upperCaseFirstBandMemberName(metallica).members).toContainEqual(
 );
 ```
 
-See [artists.test.ts](https://github.com/ksaaskil/functional-programming-examples/blob/master/monocle-ts/artists.test.ts) in the accompanying repository for an example of how to zoom into the oldest member of the band.
+See the test file in [the accompanying repository](https://github.com/ksaaskil/functional-programming-examples/blob/master/monocle-ts) for an example of how to zoom into the oldest member of the band.
 
 `Optional` allows us to zoom into values that may not exist. In the next article, we'll see how `Traversal` and `Fold` can be used to zoom into multiple values (like all members of the band).
 
@@ -311,7 +307,7 @@ That concludes our introduction to optics with `monocle-ts`! Please leave a comm
 
 Finally, I'd like to mention that I think Giulio Canti's functional programming libraries for TypeScript (`fp-ts`, `monocle-ts`, `io-ts`, `hyper-ts`) all make very good repositories for contributions. Documentation is quite terse and, as far as I know, the author is very open to making the packages more easily approachable to newcomers. So if you read the documentation and find that a killer function is missing documentation or the existing example is broken, shoot a pull request with your own example! I did it too, once :)
 
-## Resources:
+## Resources
 
 - [Introduction to optics](https://medium.com/@gcanti/introduction-to-optics-lenses-and-prisms-3230e73bfcfe) by Giulio Canti
 - [A Little Lens Starter Tutorial](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial): Introduction to `lens` package in Haskell
@@ -321,3 +317,4 @@ Finally, I'd like to mention that I think Giulio Canti's functional programming 
 - [Control.Lens.Tutorial](https://hackage.haskell.org/package/lens-tutorial-1.0.4/docs/Control-Lens-Tutorial.html): Lens tutorial for Haskell beginners
 - [python-lenses](https://github.com/ingolemo/python-lenses): Lens library for Python
 - [Introduction to Lenses](https://medium.com/javascript-scene/lenses-b85976cb0534) by Eric Elliott
+- [openapi-refinements](https://github.com/Meeshkan/unmock-js/blob/dev/packages/openapi-refinements/src/index.ts) is a practical example of `monocle-ts` in action
