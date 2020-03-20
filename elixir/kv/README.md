@@ -19,3 +19,26 @@ Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_do
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/kv](https://hexdocs.pm/kv).
 
+## Instructions
+
+Compile:
+
+```bash
+$ mix compile
+```
+
+All compilation artifacts are placed inside the `\_build` directory using the options defined in the mix.exs file.
+
+Test:
+
+```bash
+$ mix test
+```
+
+Start an `iex` session:
+
+```bash
+$ iex -S mix
+```
+
+Recompile with `recompile()` inside the session.
