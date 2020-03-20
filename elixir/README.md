@@ -13,3 +13,11 @@ Compile module:
 ```bash
 $ elixirc math.ex
 ```
+
+## `mix`
+
+Key-value storage example was created with
+
+```bash
+$ mix new kv --module KV
+```
