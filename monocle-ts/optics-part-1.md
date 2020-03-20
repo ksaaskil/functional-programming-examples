@@ -3,7 +3,7 @@ title: Introduction to composable optics with monocle-ts
 published: false
 description: With io-ts, Elvis and Metallica
 cover_image: https://dev-to-uploads.s3.amazonaws.com/i/y2qfq36rrsa4avuf9yoa.jpg
-tags: typescript, optics, functional, programming, fp, javascript
+tags: typescript, optics, functional, javascript
 series: Introduction to optics with monocle-ts
 ---
 
