@@ -25,20 +25,75 @@ In programming, we typically deal with two kinds of objects: values and types. I
 ```
 ghci> :t True
 True :: Bool
-ghci> :t [True, False, True]
-[True, False, True] :: [Bool]
 ```
 
-These expressions show that the type of `True` is `Bool`, boolean. The type of `[True, False, True]` is `[Bool]`, i.e., a list of booleans.
+Haskell says that the inferred type of `True` is `Bool`, a boolean. `Bool` is defined in the [`Prelude`](https://hackage.haskell.org/package/base-4.6.0.1/docs/Prelude.html) module imported by default.
 
-So far so good. Let's play a bit more:
+Tuples are defined by parentheses:
+
+```
+ghci> :t (True, False)
+(True, False) :: (Bool, Bool)
+```
+
+Function `fst` can be used to extract the first component from a pair (a tuple of two elements). In Haskell, function is invoked by putting the arguments after the function name, without parentheses:
+
+```
+ghci> myPair = (True, False)
+ghci> fst myPair
+True
+```
+
+What is the type of function `fst`?
+
+```
+ghci> :t fst
+fst :: (a, b) -> a
+```
+
+Here, `a` and `b` are so-called _type variables_. They represent any type, a bit like _generics_ in languages such as Java.
+
+As another example of function, consider `&&`, the `AND` operator familiar from most programming languages. When you write the following in Haskell, 
+
+```
+ghci> True && False
+False
+```
+
+you're actually evaluating the function `(&&)` with two arguments, `True` and `False`. In Haskell, functions consisting of only special characters are considered _infix_ functions by default, meaning that the function should be sandwiched between its arguments. The parentheses are required for examining the type or calling it as a prefix function: 
+
+```
+
+ghci> (&&) True False
+False
+```
+
+Parentheses are also required if calling the functions as a prefix ("normal") function:
+
+```
+ghci> :t (&&)
+(&&) :: Bool -> Bool -> Bool
+```
+
+## Typeclasses
+
+What is the type of `2`? Let's see:
+
+```
+ghci> :t 2
+2 :: Num p => p
+```
+
+What does this mean? Haskell says that the inferred type of `2` is `p`, where `p` is a so-called _type variable_. A type variable represents any type satisfying the _class constraints_ on the left side of `=>`. In this case, the class constraint is  `Num p`, meaning that the type `p` belongs to the _typeclass_ `Num`.
+
+Here's another example:
 
 ```
 ghci> :t [1, 2, 3]
 [1, 2, 3] :: Num a => [a]
 ```
 
-What does this mean? Here, Haskell says that the inferred type of `[1, 2, 3]` is `[a]`, a list of `a`. Here `a` is a so-called _type variable_, any type satisfying the class constraint `Num a`. This means that the type `a` must belong to the `Num` typeclass.  
+Now, Haskell says that the inferred type of `[1, 2, 3]` is a list of type variable `a`, where `a` again has the type constrain that it belongs to the `Num`.  
 
 ## Kind
 
