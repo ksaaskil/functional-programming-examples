@@ -1,34 +1,66 @@
 ---
-title: Why I love learning functional programming in Haskell in 2020
+title: Why I love learning functional programming
 published: false
-description: Why I think learning FP is fun and useful and Haskell the perfect language for it
+description: Yet another blog post on why I think learning FP is fun and useful
 tags: functional,programming,haskell
 series: Learning functional programming
 ---
 
 This is the first part of the series on learning functional programming (FP). Inspired by [100 days of FP](https://dev.to/gillchristian/day-12-lambda-calculus-29hg), I'm also writing this series as my personal notes of my progress in learning FP. I do not claim to be an expert in FP, so if you think anything I write is inaccurate or plain wrong, please let me know in the comments!
 
-In this first part, I'd like to share my motivation on learning functional programming (FP) and why I think Haskell is the perfect language for learning FP.
-
-Let me start with a confession. In my whole (admittedly short) career in professional software development, I've never written a single line of code in Haskell, and I probably never will. In a previous job, I did write a lot of code in [Scala](https://www.scala-lang.org/), but I think my code was closer to "concise Java with maps and flatmaps" than code you'd see in Haskell. Despite that, I think starting to learn functional programming was one of the most useful things I could have done for my career. Here's why I think so.
-
-### Why functional programming
+In this first part, I'd like to share why I spend time on learning functional programming in the first place. Don't take me as a functional programming advocate or expert: at work, I mostly write imperative code and I'm a noob in writing real-world software in FP. However, I still spend time learning functional programming and here's why.
 
 ### 1. It brings math to programming
 
-The first reason I like functional programming is that to me, it brings me math back to programming. At the university, I minored in match. I'll probably never have practical use to my courses in topology, differential geometry, measure theory or group theory, but I don't think any of those courses were waste of time. They all taught me a lot about the power of abstraction, how to find and see the big concepts underlying seemingly unrelated problems.
+The first reason I like functional programming is that to me, it brings math back to programming. At the university, I minored in match. I'll probably never have practical use to my courses in topology, differential geometry, measure theory or group theory, but I don't think any of those courses were waste of time. They all taught something about the power of abstraction, how to find and see the big concepts underlying seemingly unrelated problems.
 
-In functional programming, you encounter abstractions all the time. While you may not need to know what a functor is to  Functional programming has roots deep in category theory, a branch of mathematics studying objects and their relationships. Learning category theory is in no way required for learning functional programming, but being quite an analytical person, I love learning theory. 
+In functional programming, you encounter abstractions like functors and monads all the time. Functional programming has roots deep in category theory, a branch of mathematics studying objects and their relationships. Category theory tells us, for example, that  [monad is just a monoid in the category of endofunctors](https://stackoverflow.com/questions/3870088/a-monad-is-just-a-monoid-in-the-category-of-endofunctors-whats-the-problem). What the heck do those words even mean? I have no idea, but I need to find out!
 
-At the university, my major was in physics and minor in mathematics. Being a very analytical person, I've missed those days of sitting down with theory books in my career in software development. Learning functional programming concepts such as monoids, monads, functors, and applicative functors has forced me to slow down and sit down with pen and paper.
+I've been learning category theory from the wonderful [Category Theory for Programmers](https://bartoszmilewski.com/2014/10/28/category-theory-for-programmers-the-preface/) blog posts. They're are an easy and accessible way to access category theory. Maybe some day I'll be able to pick up a serious textbook on category theory! 
+
+<!--In an [interesting talk](https://haskell.love/vitaly-bragilevsky/) on how to simplify learning Haskell, Vitaly Bragilevsky had the interesting point that there's actually nothing deep to understand in concepts like functors or monads. In Haskell, they're only type classes.-->
 
 ### 2. It teaches you to think differently
 
-Most of us learn imperative programming at school, using constructs such as if-clauses and for-loops. Therefore, when you suddently can't use such imperative constructs, your program will inevitably look quite different. I think that's a very good thing, as it's good to have multiple  solutions to the same problem available in your toolbox so you can pick the one most suited for your situation.
+Putting aside playing with [Basic](https://en.wikipedia.org/wiki/BASIC) in the 90s, I first learned programming at the university in Java and C. In those languages, programs are written using constructs such as if-clauses and for-loops. Data is typically modified in-place with functions or method calls that return nothing.
+
+If-clauses, for-loops and in-place mutations are easy to understand, because that's how we intuitively process data. If I'm given a list of `N` skills that I need to learn unless I already know the skill, here's what to do:
+
+0. Set `i=1`
+1. Take the `i`th skill from the list
+2. Check if you know the skill. If you don't, learn the skill.
+3. If `i=N`, exit. Otherwise, set `i = i+1` and go to `1`.
+
+This is an imperative program, with one command after another that modify the program state. This is intuitive to us, because that's how we process data in everyday life. To us, world is made of mutable objects. That's how computers also work, one statement after another modifying the program state. 
+
+Now, imagine you're told you need to write code for a program without a single if-clause or for-loop. You are also forbidden to mutate objects. What you're allowed to do is create new objects and write _pure_, _referentially transparent_ functions. Referential transparency means that a function call can be replaced by its return value without any change in the program. So for example, this function is not referentially transparent:
+
+```python
+def square(x):
+    print(f"Computing the square of {x}") 
+    return x*x
+```
+
+because you can't replace `square(x)` with `x*x` and expect the program to remain unchanged.
+
+It goes without saying that such constraints force you to think differently about writing code. To me, that's a very good thing. Recently I've been writing code mostly in Python and JavaScript. While I love both languages for their flexibility and simple syntax, and there's always something new to learn in both of them, I don't think they offer that many chances for learning new _concepts_. I write the same if-clauses and for-loops day after another, possibly in some new framework, but at the end of the day, the programs look the same.
+
+With functional programming, programs will inevitably look different. Are they better? That's an ill-posed question, as there's no best code for a particular task. But I do think it's useful to learn different ways of writing code. The more tools you have at your disposal, the more likely it is that you can pick the best one for the job when new problems emerge.  
+
+Now, a fact is that my employer most likely wouldn't appreciate me spending the whole morning figuring out how to [make a HTTP call](https://dev.to/ksaaskil/using-fp-ts-for-http-requests-and-validation-131c) or spending the morning explaing my colleagues how data type `Maybe` replaces `if`. That's why learning FP is mostly a hobby to me at the moment. However, if I had colleagues at work as enthusiastic about FP as me, situation would get different. Everyone could support each other in learning how to solve problems in a functional way, knowledge would spread through the whole team in the form of peer reviews and code, and the cost of learning new concepts would be lower as those new concepts might improve everybody's code base.
 
 ### 3. FP is good programming style
 
 I think functional programming is the logical conclusion to many ideas considered good programming style. Avoiding side effects, favoring immutable objects, and using composition instead of, for example, inheritance to achieve code re-use are principles built-in to functional programming. Don't get me wrong: at work I still write functions with side effects (logging, analytics events, etc.) or use mutable objects (for, e.g., complex data structures). In my experience, however, favoring functional code typically results in easier-to-read and modular code. It's interesting to learn how far you can push such ideas.
+
+
+---
+title: Why I love learning functional programming
+published: false
+description: Yet another blog post on why I think learning FP is fun and useful
+tags: functional,programming,haskell
+series: Learning functional programming
+---
 
 ## Why Haskell?
 
