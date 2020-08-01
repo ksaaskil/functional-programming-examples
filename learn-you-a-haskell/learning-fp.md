@@ -12,7 +12,13 @@ In this first part, I'd like to share my motivation on learning functional progr
 
 Let me start with a confession. In my whole (admittedly short) career in professional software development, I've never written a single line of code in Haskell, and I probably never will. In a previous job, I did write a lot of code in [Scala](https://www.scala-lang.org/), but I think my code was closer to "concise Java with maps and flatmaps" than code you'd see in Haskell. Despite that, I think starting to learn functional programming was one of the most useful things I could have done for my career. Here's why I think so.
 
+### Why functional programming
+
 ### 1. It brings math to programming
+
+The first reason I like functional programming is that to me, it brings me math back to programming. At the university, I minored in match. I'll probably never have practical use to my courses in topology, differential geometry, measure theory or group theory, but I don't think any of those courses were waste of time. They all taught me a lot about the power of abstraction, how to find and see the big concepts underlying seemingly unrelated problems.
+
+In functional programming, you encounter abstractions all the time. While you may not need to know what a functor is to  Functional programming has roots deep in category theory, a branch of mathematics studying objects and their relationships. Learning category theory is in no way required for learning functional programming, but being quite an analytical person, I love learning theory. 
 
 At the university, my major was in physics and minor in mathematics. Being a very analytical person, I've missed those days of sitting down with theory books in my career in software development. Learning functional programming concepts such as monoids, monads, functors, and applicative functors has forced me to slow down and sit down with pen and paper.
 
