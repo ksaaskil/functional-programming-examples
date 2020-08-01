@@ -10,7 +10,7 @@ This is the first part of the series on learning functional programming (FP). In
 
 In this first part, I'd like to share why I spend time on learning functional programming in the first place. Don't take me as a functional programming advocate or expert: at work, I mostly write imperative code and I'm a noob in writing real-world software in FP. However, I still spend time learning functional programming. This is why.
 
-### 1. It brings math to programming
+### It brings math to programming
 
 The first reason I like functional programming is that to me, it brings math back to programming. At the university, I minored in match. I'll probably never have practical use to my courses in topology, differential geometry, measure theory or group theory, but I don't think any of those courses were waste of time. They all taught something about the power of abstraction, how to find and see the big concepts underlying seemingly unrelated problems.
 
@@ -20,7 +20,7 @@ I've been learning category theory from the wonderful [Category Theory for Progr
 
 <!--In an [interesting talk](https://haskell.love/vitaly-bragilevsky/) on how to simplify learning Haskell, Vitaly Bragilevsky had the interesting point that there's actually nothing deep to understand in concepts like functors or monads. In Haskell, they're only type classes.-->
 
-### 2. It teaches you to think differently
+### It forces you to think differently
 
 Putting aside playing with [Basic](https://en.wikipedia.org/wiki/BASIC) in the 90s, I first learned programming at the university in Java and C. In those languages, programs are written using constructs such as if-clauses and for-loops. Data is typically modified in-place with functions or method calls that return nothing.
 
@@ -67,10 +67,74 @@ val factorialREPL: IO[Unit] = sequence_(
 
 That's a purely functional program written in imperative fashion. The for-loop is Scala's [syntactic sugar](https://docs.scala-lang.org/tutorials/FAQ/yield.html) for the composition of operations such as `map`, `filter` and `flatMap`.
 
-### 3. FP is good programming style
+### FP is a logical conclusion to many ideas considered good programming style
 
-I think functional programming is the logical conclusion to many ideas considered good programming style. Avoiding side effects, favoring immutable objects, and using composition instead of, for example, inheritance to achieve code re-use are principles built-in to functional programming. Don't get me wrong: at work I still write functions with side effects (logging, analytics events, etc.) or use mutable objects (for, e.g., complex data structures). In my experience, however, favoring functional code typically results in easier-to-read and modular code. It's interesting to learn how far you can push such ideas.
+My first touch to functional programming came from attending lectures in [functional programming](https://csd.cmu.edu/course-profiles/15-150-Principles-of-Functional-Programming) at CMU when I was a visiting researcher there. I attended maybe six lectures, where the lecturer wrote formal proofs that given recursive functions would terminate and have the correct result. It all seemed very theoretical to me and I thought I would not meet FP again.
 
+However, I was introduced to FP soon in my working career as more experienced programmers [told me](https://dev.to/ksaaskil/how-i-accidentally-learned-functional-programming-1g1m) to avoid writing code with implicit side effects and mutable state where possible. Of course, I didn't really understand at the time that such ideas were built-in to FP.
+
+As an example of how FP can help write clean code by avoiding implicit side effects, let's say you have a function
+
+```ts
+const containsFinnishLapphund: (jpegBase64: String) => boolean = ...
+```
+
+that checks if an image contains a [Finnish lapphund](https://www.youtube.com/watch?v=X0ejoDOmM6Q). The signature says the function takes a base64 encoded string and returns a boolean. Based on the signature, I _expect this function to not have implicit side effects_ like modifying the input or writing to a database. Therefore, I can safely call the function for 100 images in parallel without worrying about race conditions, deadlocks, or anything else.
+
+The key here is the word _implicit_. In the context of my TypeScript codebase, I do not mind if the function prints to console: my code would most likely be interspersed with such logging statements anyway. However, I would be very surprised if calling the function incremented a database counter or stored the image to Google storage. Such surprises could lead to hard-to-find bugs, let alone they would make testing a pain.
+
+In non-functional languages, it's the developer's responsibility to write code that is not surprising. In Haskell, however, a type signature such as
+
+```hs
+containsFinnishLapphund :: String -> Bool
+``` 
+
+would make it _impossible_ for the implementation to have observable side effects such as storing the image somewhere. If the function insisted on making a network call or logging to console, it would need a type signature
+
+```hs
+containsFinnishLapphund :: String -> IO Bool
+```
+
+The `IO` typeclass here makes it explicit that the function is doing _something_ with the external world. What does it do? For that, you'll need to read the code or trust the function docstring saying it doesn't do anything other than print to console. But at least, it's not a surprise anymore.
+
+Another example of an "FP idea" considered good programming style nowadays is declarative style. For example, most programmers would nowadays agree that to remove even elements from an array and square the rest, this
+
+```js
+const double = (arr) => arr.filter(v => v % 2 === 0).map(v => v*v);
+```
+
+is preferred to this:
+
+```js
+const double = (arr) => {
+    const newArr = []; 
+    for (const i = 0; i++; i < arr.length) {
+        if (arr[i] % 2 === 0) {
+            newArr.push(arr[i] * arr[i]);
+        }
+    }
+    return newArr;
+}
+```
+
+In functional languages, the former would be the default. Again, this doesn't mean declarative style is better than imperative, but shows that declarative programming has its pros. In FP, the declarative style can be pushed to the limits with function composition operator `.` and point-free style:
+
+```hs
+square :: Int -> Int
+square num = num * num
+
+isEven :: Int -> Bool
+isEven n = n `mod` 2 == 0
+
+double :: [Int] -> [Int]
+double = map square . filter isEven
+```
+
+I find this to be elegant and beautiful. It's true that imperative code can be easier to read and it takes time to get used to function composition and the point-free style, but I find it worth the effort.
+
+### Conclusion
+
+That concludes the first part of the series. I love learning functional programming because it gives me reason to read math again, is forces me to think differently, and it pushes the boundaries of good programming style. Thanks for reading, please leave a comment if you have any!
 
 ---
 title: Why I love learning functional programming
