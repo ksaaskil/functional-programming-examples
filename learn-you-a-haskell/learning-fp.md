@@ -1,14 +1,14 @@
 ---
 title: Why I love learning functional programming
 published: false
-description: Yet another blog post on why I think learning FP is fun and useful
+description: Yet another blog post on why learning functional programming is fun and useful
 tags: functional,programming,haskell
 series: Learning functional programming
 ---
 
 This is the first part of the series on learning functional programming (FP). Inspired by [100 days of FP](https://dev.to/gillchristian/day-12-lambda-calculus-29hg), I'm also writing this series as my personal notes of my progress in learning FP. I do not claim to be an expert in FP, so if you think anything I write is inaccurate or plain wrong, please let me know in the comments!
 
-In this first part, I'd like to share why I spend time on learning functional programming in the first place. Don't take me as a functional programming advocate or expert: at work, I mostly write imperative code and I'm a noob in writing real-world software in FP. However, I still spend time learning functional programming and here's why.
+In this first part, I'd like to share why I spend time on learning functional programming in the first place. Don't take me as a functional programming advocate or expert: at work, I mostly write imperative code and I'm a noob in writing real-world software in FP. However, I still spend time learning functional programming. This is why.
 
 ### 1. It brings math to programming
 
@@ -48,6 +48,24 @@ It goes without saying that such constraints force you to think differently abou
 With functional programming, programs will inevitably look different. Are they better? That's an ill-posed question, as there's no best code for a particular task. But I do think it's useful to learn different ways of writing code. The more tools you have at your disposal, the more likely it is that you can pick the best one for the job when new problems emerge.  
 
 Now, a fact is that my employer most likely wouldn't appreciate me spending the whole morning figuring out how to [make a HTTP call](https://dev.to/ksaaskil/using-fp-ts-for-http-requests-and-validation-131c) or spending the morning explaing my colleagues how data type `Maybe` replaces `if`. That's why learning FP is mostly a hobby to me at the moment. However, if I had colleagues at work as enthusiastic about FP as me, situation would get different. Everyone could support each other in learning how to solve problems in a functional way, knowledge would spread through the whole team in the form of peer reviews and code, and the cost of learning new concepts would be lower as those new concepts might improve everybody's code base.
+
+Finally, I'd like to note that functional programming doesn't mean you're not programming imperatively. Here's one excerpt of Scala code from the [Functional Programming in Scala](https://www.manning.com/books/functional-programming-in-scala) book ("red book"):
+
+```scala
+val factorialREPL: IO[Unit] = sequence_(
+    IO { println(helpstring) },
+    doWhile { IO { readline } } { line =>
+        when (line != "q") {
+            for {
+                n <- factorial(line.toInt)
+                _ <- IO { println("factorial: " + n) }
+            }
+        } yield ()
+    }
+)
+```
+
+That's a purely functional program written in imperative fashion. The for-loop is Scala's [syntactic sugar](https://docs.scala-lang.org/tutorials/FAQ/yield.html) for the composition of operations such as `map`, `filter` and `flatMap`.
 
 ### 3. FP is good programming style
 
